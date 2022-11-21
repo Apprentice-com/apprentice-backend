@@ -18,7 +18,7 @@ type Users struct {
 	UserImage       string             `gorm:"type:varchar(255)"`
 	Companies       []Companies        `gorm:"foreignKey:UserID"`
 	Degrees         []EducationDetails `gorm:"foreignKey:UserID"`
-	SeekerSkillSets []SkillSets   /* `gorm:"foreignKey:UserID"` */ `gorm:"many2many:user_skill_sets;"`
+	SeekerSkillSets []SkillSets        `gorm:"many2many:user_skill_sets;"`
 	Logs            []UserLogs         `gorm:"foreignKey:UserID"`
 	Jobposts        []JobPosts         `gorm:"foreignKey:UserID"`
 	SeekerProfile   []SeekerProfiles   `gorm:"foreignKey:UserID"`
@@ -35,8 +35,3 @@ func (entity *Users) BeforeCreate(db *gorm.DB) error {
 	entity.Password = util.HashPassword(entity.Password)
 	return nil
 }
-
-// func (entity *Users) UserAccounts(db *gorm.DB) error {
-// 	entity.UpdatedAt = time.Now().Local()
-// 	return nil
-// }

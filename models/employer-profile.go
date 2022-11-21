@@ -20,6 +20,7 @@ type EmployerProfiles struct {
 type Companies struct {
 	gorm.Model
 	UserID             uint
+	BusinessStreamID   uint
 	CompanyName        string          `gorm:"type:varchar(100)"`
 	CompanyDescription string          `gorm:"type:varchar(1000)"`
 	EstablishmentDate  time.Time       `gorm:"type:date"`
@@ -33,4 +34,11 @@ type CompanyImages struct {
 	gorm.Model
 	CompanyID    uint   `gorm:"not null"`
 	CompanyImage string `gorm:"type:varchar(500)"`
+}
+
+// Business Stream is a type of company
+type BusinessStreams struct {
+	gorm.Model
+	BusinessStreamName      string      `gorm:"not null"`
+	BusinessStreamCompanies []Companies `gorm:"foreignKey:BusinessStreamID"`
 }

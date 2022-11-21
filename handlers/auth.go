@@ -11,7 +11,7 @@ import (
 
 type AuthHandler interface {
 	UserLogin(ctx *gin.Context)
-	ActiveUserRegister(ctx *gin.Context)
+	ActiveUserSeekerRegister(ctx *gin.Context)
 }
 
 type authHandler struct {
@@ -41,9 +41,9 @@ func (h *authHandler) UserLogin(ctx *gin.Context) {
 }
 
 /* Active User Register Handler */
-func (h *authHandler) ActiveUserRegister(ctx *gin.Context) {
+func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 
-	var input authService.InputUserRegister
+	var input authService.InputUserSeekerRegister
 	ctx.ShouldBindJSON(&input)
 	conf := helpers.Config.Options
 	conf = append(conf, util.ErrorMetaConfig{
@@ -58,6 +58,6 @@ func (h *authHandler) ActiveUserRegister(ctx *gin.Context) {
 		return
 	}
 
-	resultRegister, errRegister := h.service.ActiveUserRegister(&input)
+	resultRegister, errRegister := h.service.ActiveUserSeekerRegister(&input)
 	helpers.ErrUserRegisterHandler(resultRegister, ctx, errRegister)
 }

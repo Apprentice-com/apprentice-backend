@@ -1,8 +1,7 @@
-package authService
+package profileService
 
-type InputLogin struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+type InputGetSeekerProfile struct {
+	UserID    uint `validate:"required"`
 }
 
 type InputUserSeekerRegister struct {

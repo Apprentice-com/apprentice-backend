@@ -6,7 +6,7 @@ import (
 
 type Service interface {
 	UserLogin(input *InputLogin) (*model.Users, string)
-	ActiveUserRegister(input *InputUserRegister) (*model.Users, string)
+	ActiveUserSeekerRegister(input *InputUserSeekerRegister) (*model.Users, string)
 }
 
 type service struct {
@@ -31,13 +31,9 @@ func (s *service) UserLogin(input *InputLogin) (*model.Users, string) {
 }
 
 /* Active User Registration Service */
-func (s *service) ActiveUserRegister(input *InputUserRegister) (*model.Users, string) {
+func (s *service) ActiveUserSeekerRegister(input *InputUserSeekerRegister) (*model.Users, string) {
 
-	users := model.Users{
-		Email:    input.Email,
-		Password: input.Password,
-	}
-	resultRegister, errRegister := s.repo.ActiveUserRegisterRepository(&users)
+	resultRegister, errRegister := s.repo.ActiveUserSeekerRegisterRepository(input)
 
 	return resultRegister, errRegister
 }
