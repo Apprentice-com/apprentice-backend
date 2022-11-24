@@ -10,11 +10,11 @@ import (
 // Users is database entity for user
 type Users struct {
 	gorm.Model
-	UserType        string             `gorm:"not null"`
+	UserType        int
 	Email           string             `gorm:"type:varchar(50);unique;not null"`
 	Password        string             `gorm:"type:varchar(255)"`
 	IsActive        bool               `gorm:"type:bool"`
-	ContactNumber   string             `gorm:"type:varchar(20);unique;not null"`
+	ContactNumber   string             `gorm:"type:varchar(20)"`
 	UserImage       string             `gorm:"type:varchar(255)"`
 	Companies       []Companies        `gorm:"foreignKey:UserID"`
 	Degrees         []EducationDetails `gorm:"foreignKey:UserID"`

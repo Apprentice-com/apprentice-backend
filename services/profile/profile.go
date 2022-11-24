@@ -5,7 +5,8 @@ import (
 )
 
 type Service interface {
-	GetSeekerProfile(input *InputGetSeekerProfile) (*model.SeekerProfiles, string)
+	GetSeekerProfile(input *GetSeekerProfile) (*model.SeekerProfiles, string)
+	CreateEducationDetails(input *CreateEducationDetails) (*model.EducationDetails, string)
 }
 
 type service struct {
@@ -17,9 +18,17 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) GetSeekerProfile(input *InputGetSeekerProfile) (*model.SeekerProfiles, string) {
+func (s *service) GetSeekerProfile(input *GetSeekerProfile) (*model.SeekerProfiles, string) {
 
 	result, err := s.repo.GetSeekerProfile(input)
+
+	return result, err
+}
+
+/* Create EducationDetails Service */
+func (s *service) CreateEducationDetails(input *CreateEducationDetails) (*model.EducationDetails, string) {
+
+	result, err := s.repo.CreateEducationDetails(input)
 
 	return result, err
 }

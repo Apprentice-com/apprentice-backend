@@ -7,7 +7,7 @@ type ErrorMetaConfig struct {
 }
 
 type ErrorConfig struct {
-	Options []ErrorMetaConfig
+	Options map[string]ErrorMetaConfig
 }
 
 type errorResponse struct {
@@ -22,12 +22,14 @@ func NewBindValidator(validator validators) *binding {
 	return &binding{validator: validator}
 }
 
-func (b *binding) BindValidator(s interface{}, config []ErrorMetaConfig) (*errorResponse, int) {
+func (b *binding) BindValidator(s interface{}, config map[string]ErrorMetaConfig) (*errorResponse, int) {
 
 	mergeObject := make(map[int]interface{})
 
-	for i, value := range config {
+	i := 0
+	for _, value := range config {
 		mergeObject[i] = value
+		i++
 	}
 
 	var errors errorResponse

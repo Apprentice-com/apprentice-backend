@@ -1,12 +1,16 @@
 package profileService
 
-type InputGetSeekerProfile struct {
-	UserID    uint `validate:"required"`
+import "time"
+
+type GetSeekerProfile struct {
+	UserID uint `validate:"required"`
 }
 
-type InputUserSeekerRegister struct {
-	FirstName     string `json:"name"`
-	SecondName  string `json:"surname"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,gte=8"`
+type CreateEducationDetails struct {
+	UserID          uint      `json:"user_id"`
+	InstitutionName string    `json:"institution_name" validate:"required"`
+	Major           string    `json:"major" validate:"required"`
+	Degree          string    `json:"degree" validate:"required"`
+	StartDate       time.Time `json:"start_date" validate:"required"`
+	EndDate         time.Time `json:"end_date" validate:"required"`
 }

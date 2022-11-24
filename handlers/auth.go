@@ -46,11 +46,11 @@ func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 	var input authService.InputUserSeekerRegister
 	ctx.ShouldBindJSON(&input)
 	conf := helpers.Config.Options
-	conf = append(conf, util.ErrorMetaConfig{
+	conf["Password minimum 8 characters"] =  util.ErrorMetaConfig{
 		Tag:     "gte",
 		Field:   "Password",
 		Message: "password minimum must be 8 character",
-	},)
+	}
 	errResponse, errCount := util.GoValidator(input, conf)
 
 	if errCount > 0 {

@@ -59,7 +59,7 @@ func ValidateTitle(field validator.FieldLevel) bool {
 	return strings.Contains(field.Field().String(), "Cool")
 }
 
-func GoValidator(s interface{}, config []ErrorMetaConfig) (interface{}, int) {
+func GoValidator(s interface{}, config map[string]ErrorMetaConfig) (interface{}, int) {
 	var validate *validator.Validate
 	validators := NewValidator(validate)
 	bind := NewBindValidator(validators)

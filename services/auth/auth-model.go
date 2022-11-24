@@ -6,8 +6,9 @@ type InputLogin struct {
 }
 
 type InputUserSeekerRegister struct {
-	FirstName     string `json:"name"`
-	SecondName  string `json:"surname"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,gte=8"`
+	FirstName  string `json:"name"`
+	SecondName string `json:"surname"`
+	UserType   int    `json:"user_type"`
+	Email      string `json:"email" validate:"required,email"`
+	Password   string `json:"password" validate:"required,gte=8"`
 }

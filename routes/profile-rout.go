@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/KadirbekSharau/apprentice-backend/handlers"
 	"github.com/KadirbekSharau/apprentice-backend/middleware"
-	"github.com/KadirbekSharau/apprentice-backend/services/profile"
+	profileService "github.com/KadirbekSharau/apprentice-backend/services/profile"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -19,4 +19,5 @@ func InitProfileRoutes(db *gorm.DB, route *gin.Engine) {
 
 	groupRoute := route.Group("/api/v1/")
 	groupRoute.GET("/profile", middleware.Auth([]int{1}), handler.GetSeekerProfile)
+	groupRoute.POST("/educationdetails" /*middleware.Auth([]int{1}),*/, handler.CreateEducationDetails)
 }

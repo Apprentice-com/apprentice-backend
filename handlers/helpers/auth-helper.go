@@ -9,23 +9,23 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var roles = map[string]int{"seeker": 1, "employer": 2} 
+var roles = map[string]int{"seeker": 1, "employer": 2, "admin": 0} 
 const secret_key string = "JWT_SECRET"
 const expTime = 24*60*1
 
 var Config = util.ErrorConfig{
-	Options: []util.ErrorMetaConfig{
-		{
+	Options: map[string]util.ErrorMetaConfig{
+		"Email required": {
 			Tag:     "required",
 			Field:   "Email",
 			Message: "email is required on body",
 		},
-		{
+		"Email format not valid": {
 			Tag:     "email",
 			Field:   "Email",
 			Message: "email format is not valid",
 		},
-		{
+		"Password required": {
 			Tag:     "required",
 			Field:   "Password",
 			Message: "password is required on body",

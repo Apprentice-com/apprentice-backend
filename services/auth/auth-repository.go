@@ -1,6 +1,8 @@
 package authService
 
 import (
+	"fmt"
+
 	model "github.com/KadirbekSharau/apprentice-backend/models"
 	util "github.com/KadirbekSharau/apprentice-backend/util"
 	"gorm.io/gorm"
@@ -52,6 +54,7 @@ func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRe
 	var users model.Users
 	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
+	fmt.Println("Inn!!")
 
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
@@ -59,14 +62,18 @@ func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRe
 		errorCode <- "REGISTER_CONFLICT_409"
 		return &users, <-errorCode
 	}
+	fmt.Println("Checked!!")
 
 	users.Email = input.Email
 	users.Password = input.Password
 	users.IsActive = true
-	users.UserType = "Employer"
+	users.UserType = 1
+	fmt.Println("Assigned!!")
 
 	addNewUser := db.Debug().Create(&users)
+	fmt.Println("Created!!")
 	db.Commit()
+	fmt.Println("Committed!!")
 
 	if addNewUser.Error != nil {
 		errorCode <- "REGISTER_FAILED_403"
@@ -75,13 +82,7 @@ func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRe
 		errorCode <- "nil"
 	}
 
-	userId, ok := addNewUser.Get("id")
-	if !ok {
-		errorCode <- "REGISTER_FAILED_403"
-		return &users, <-errorCode
-	}
-	id := userId.(uint)
-	r.AddNewSeekerProfile(id, input)
+	r.AddNewSeekerProfile(users.ID, input)
 
 	return &users, <-errorCode
 }
@@ -91,8 +92,10 @@ func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeeker
 	var users model.Users
 	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
+	fmt.Println("Inn!!")
 
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
+	fmt.Println("Checked!")
 
 	if checkUserAccount.RowsAffected > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"
@@ -103,10 +106,13 @@ func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeeker
 	users.Email = input.Email
 	users.Password = input.Password
 	users.IsActive = true
-	users.UserType = "Employer"
+	users.UserType = 2
+	fmt.Println("Assigned!")
 
 	addNewUser := db.Debug().Create(&users)
+	fmt.Println("Created")
 	db.Commit()
+	fmt.Println("Comitted")
 
 	if addNewUser.Error != nil {
 		errorCode <- "REGISTER_FAILED_403"
@@ -115,13 +121,13 @@ func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeeker
 		errorCode <- "nil"
 	}
 
-	userId, ok := addNewUser.Get("id")
-	if !ok {
-		errorCode <- "REGISTER_FAILED_403"
-		return &users, <-errorCode
-	}
-	id := userId.(uint)
-	r.AddNewSeekerProfile(id, input)
+	// userId, ok := addNewUser.Get("id")
+	// if !ok {
+	// 	errorCode <- "REGISTER_FAILED_403"
+	// 	return &users, <-errorCode
+	// }
+	// id := userId.(uint)
+	// r.AddNewSeekerProfile(id, input)
 
 	return &users, <-errorCode
 }

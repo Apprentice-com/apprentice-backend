@@ -24,15 +24,12 @@ func NewDatabaseConnection() *gorm.DB {
 		&models.CompanyImages{},
 		&models.EducationDetails{},
 		&models.EmployerProfiles{},
-		//&models.JobPostSkillSet{},
 		&models.JobPosts{},
 		&models.SeekerProfiles{},
-		//&models.UserSkillSet{},
 		&models.SkillSets{},
 		&models.UserLogs{},
 	)
 
-	//AccountsDataMigrator(db)
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
