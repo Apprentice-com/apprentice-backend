@@ -1,4 +1,4 @@
-package profileService
+package dto
 
 import "time"
 

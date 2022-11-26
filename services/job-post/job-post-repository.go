@@ -1,4 +1,4 @@
-package profileService
+package jobPostService
 
 import (
 	"github.com/KadirbekSharau/apprentice-backend/dto"
@@ -14,27 +14,8 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-/* Get Profile Repository Service */
-func (r *repository) GetSeekerProfile(input *dto.GetSeekerProfile) (*models.SeekerProfiles, string) {
-
-	var profile models.SeekerProfiles
-	db := r.db.Model(&profile)
-	errorCode := make(chan string, 1)
-
-	result := db.Debug().Select("*").Where("user_id = ?", input.UserID).Find(&profile)
-
-	if result.RowsAffected < 1 {
-		errorCode <- "CITY_NOT_FOUND_404"
-		return &profile, <-errorCode
-	} else {
-		errorCode <- "nil"
-	}
-
-	return &profile, <-errorCode
-}
-
 /* Create Education Details Repository Service */
-func (r *repository) CreateEducationDetails(input *dto.CreateEducationDetails) (*models.EducationDetails, string) {
+func (r *repository) CreateJobPost(input *dto.CreateEducationDetails) (*models.EducationDetails, string) {
 	var ed models.EducationDetails
 	db := r.db.Model(&ed)
 	errorCode := make(chan string, 1)

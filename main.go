@@ -37,6 +37,7 @@ func main() {
 
 	routes.InitAuthRoutes(db, server)
 	routes.InitProfileRoutes(db, server)
+	routes.InitSkillSetRoutes(db, server)
 	// routes.InitCategoryRoutes(db, server)
 
 	server.Run(":8080")

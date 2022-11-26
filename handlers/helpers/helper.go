@@ -13,7 +13,7 @@ var roles = map[string]int{"seeker": 1, "employer": 2, "admin": 0}
 const secret_key string = "JWT_SECRET"
 const expTime = 24*60*1
 
-var Config = util.ErrorConfig{
+var AuthConfig = util.ErrorConfig{
 	Options: map[string]util.ErrorMetaConfig{
 		"Email required": {
 			Tag:     "required",
@@ -77,7 +77,7 @@ func ErrUserRegisterHandler(resultRegister *models.Users, ctx *gin.Context, errR
 
 	default:
 		accessTokenData := map[string]interface{}{"id": resultRegister.ID, "email": resultRegister.Email}
-		_, errToken := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
+		accessToken, errToken := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
 
 		if errToken != nil {
 			defer logrus.Error(errToken.Error())
@@ -85,6 +85,6 @@ func ErrUserRegisterHandler(resultRegister *models.Users, ctx *gin.Context, errR
 			return
 		}
 
-		util.APIResponse(ctx, "Register new user account successfully", http.StatusCreated, http.MethodPost, nil)
+		util.APIResponse(ctx, "Register new user account successfully", http.StatusCreated, http.MethodPost, map[string]string{"accessToken": accessToken})
 	}
 }

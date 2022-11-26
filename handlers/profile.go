@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/KadirbekSharau/apprentice-backend/dto"
 	profileService "github.com/KadirbekSharau/apprentice-backend/services/profile"
 	"github.com/KadirbekSharau/apprentice-backend/util"
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,7 @@ import (
 
 type ProfileHandler interface {
 	GetSeekerProfile(ctx *gin.Context)
+	CreateEducationDetails(ctx *gin.Context)
 }
 
 type profileHandler struct {
@@ -23,7 +25,7 @@ func NewProfileHandler(service profileService.Service) *profileHandler {
 /* Get Seeker Profile Handler */
 func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 
-	var input profileService.GetSeekerProfile
+	var input dto.GetSeekerProfile
 	ctx.Params.ByName("user_id")
 
 	config := util.ErrorConfig{
@@ -58,7 +60,7 @@ func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 
 /* Create Education Details Handler */
 func (h *profileHandler) CreateEducationDetails(ctx *gin.Context) {
-	var input profileService.CreateEducationDetails
+	var input dto.CreateEducationDetails
 	ctx.ShouldBindJSON(&input)
 
 	config := util.ErrorConfig{

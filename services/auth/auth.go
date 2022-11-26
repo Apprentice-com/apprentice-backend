@@ -1,12 +1,13 @@
 package authService
 
 import (
+	"github.com/KadirbekSharau/apprentice-backend/dto"
 	model "github.com/KadirbekSharau/apprentice-backend/models"
 )
 
 type Service interface {
-	UserLogin(input *InputLogin) (*model.Users, string)
-	ActiveUserSeekerRegister(input *InputUserSeekerRegister) (*model.Users, string)
+	UserLogin(input *dto.InputLogin) (*model.Users, string)
+	ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string)
 }
 
 type service struct {
@@ -18,7 +19,7 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) UserLogin(input *InputLogin) (*model.Users, string) {
+func (s *service) UserLogin(input *dto.InputLogin) (*model.Users, string) {
 
 	user := model.Users{
 		Email:    input.Email,
@@ -31,9 +32,9 @@ func (s *service) UserLogin(input *InputLogin) (*model.Users, string) {
 }
 
 /* Active User Registration Service */
-func (s *service) ActiveUserSeekerRegister(input *InputUserSeekerRegister) (*model.Users, string) {
+func (s *service) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
 
-	resultRegister, errRegister := s.repo.ActiveUserSeekerRegisterRepository(input)
+	resultRegister, errRegister := s.repo.ActiveUserSeekerRegister(input)
 
 	return resultRegister, errRegister
 }

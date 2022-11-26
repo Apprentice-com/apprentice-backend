@@ -1,12 +1,13 @@
 package profileService
 
 import (
+	"github.com/KadirbekSharau/apprentice-backend/dto"
 	model "github.com/KadirbekSharau/apprentice-backend/models"
 )
 
 type Service interface {
-	GetSeekerProfile(input *GetSeekerProfile) (*model.SeekerProfiles, string)
-	CreateEducationDetails(input *CreateEducationDetails) (*model.EducationDetails, string)
+	GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfiles, string)
+	CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetails, string)
 }
 
 type service struct {
@@ -18,7 +19,7 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) GetSeekerProfile(input *GetSeekerProfile) (*model.SeekerProfiles, string) {
+func (s *service) GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfiles, string) {
 
 	result, err := s.repo.GetSeekerProfile(input)
 
@@ -26,7 +27,7 @@ func (s *service) GetSeekerProfile(input *GetSeekerProfile) (*model.SeekerProfil
 }
 
 /* Create EducationDetails Service */
-func (s *service) CreateEducationDetails(input *CreateEducationDetails) (*model.EducationDetails, string) {
+func (s *service) CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetails, string) {
 
 	result, err := s.repo.CreateEducationDetails(input)
 

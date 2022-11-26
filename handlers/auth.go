@@ -6,6 +6,7 @@ import (
 	"github.com/KadirbekSharau/apprentice-backend/handlers/helpers"
 	"github.com/KadirbekSharau/apprentice-backend/services/auth"
 	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/dto"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,10 +26,10 @@ func NewAuthHandler(service authService.Service) AuthHandler {
 /* User Login Handler */
 func (h *authHandler) UserLogin(ctx *gin.Context) {
 
-	var input authService.InputLogin
+	var input dto.InputLogin
 	ctx.ShouldBindJSON(&input)
 
-	errResponse, errCount := util.GoValidator(&input, helpers.Config.Options)
+	errResponse, errCount := util.GoValidator(&input, helpers.AuthConfig.Options)
 
 	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
@@ -43,9 +44,9 @@ func (h *authHandler) UserLogin(ctx *gin.Context) {
 /* Active User Register Handler */
 func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 
-	var input authService.InputUserSeekerRegister
+	var input dto.InputUserSeekerRegister
 	ctx.ShouldBindJSON(&input)
-	conf := helpers.Config.Options
+	conf := helpers.AuthConfig.Options
 	conf["Password minimum 8 characters"] =  util.ErrorMetaConfig{
 		Tag:     "gte",
 		Field:   "Password",

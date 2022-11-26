@@ -1,8 +1,7 @@
 package authService
 
 import (
-	"fmt"
-
+	"github.com/KadirbekSharau/apprentice-backend/dto"
 	model "github.com/KadirbekSharau/apprentice-backend/models"
 	util "github.com/KadirbekSharau/apprentice-backend/util"
 	"gorm.io/gorm"
@@ -49,12 +48,11 @@ func (r *repository) UserLogin(input *model.Users) (*model.Users, string) {
 }
 
 /* Active User Seeker Registration Repository */
-func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRegister) (*model.Users, string) {
+func (r *repository) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
 
 	var users model.Users
 	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
-	fmt.Println("Inn!!")
 
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
@@ -62,18 +60,14 @@ func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRe
 		errorCode <- "REGISTER_CONFLICT_409"
 		return &users, <-errorCode
 	}
-	fmt.Println("Checked!!")
 
 	users.Email = input.Email
 	users.Password = input.Password
 	users.IsActive = true
 	users.UserType = 1
-	fmt.Println("Assigned!!")
 
 	addNewUser := db.Debug().Create(&users)
-	fmt.Println("Created!!")
 	db.Commit()
-	fmt.Println("Committed!!")
 
 	if addNewUser.Error != nil {
 		errorCode <- "REGISTER_FAILED_403"
@@ -88,14 +82,12 @@ func (r *repository) ActiveUserSeekerRegisterRepository(input *InputUserSeekerRe
 }
 
 /* Active User Employer Registration Repository */
-func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeekerRegister) (*model.Users, string) {
+func (r *repository) ActiveUserEmployerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
 	var users model.Users
 	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
-	fmt.Println("Inn!!")
 
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
-	fmt.Println("Checked!")
 
 	if checkUserAccount.RowsAffected > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"
@@ -107,12 +99,9 @@ func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeeker
 	users.Password = input.Password
 	users.IsActive = true
 	users.UserType = 2
-	fmt.Println("Assigned!")
 
 	addNewUser := db.Debug().Create(&users)
-	fmt.Println("Created")
 	db.Commit()
-	fmt.Println("Comitted")
 
 	if addNewUser.Error != nil {
 		errorCode <- "REGISTER_FAILED_403"
@@ -121,19 +110,43 @@ func (r *repository) ActiveUserEmployerRegisterRepository(input *InputUserSeeker
 		errorCode <- "nil"
 	}
 
-	// userId, ok := addNewUser.Get("id")
-	// if !ok {
-	// 	errorCode <- "REGISTER_FAILED_403"
-	// 	return &users, <-errorCode
-	// }
-	// id := userId.(uint)
-	// r.AddNewSeekerProfile(id, input)
+	return &users, <-errorCode
+}
+
+/* Admin Registration Repository */
+func (r *repository) AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
+	var users model.Users
+	db := r.db.Model(&users)
+	errorCode := make(chan string, 1)
+
+	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
+
+	if checkUserAccount.RowsAffected > 0 {
+		errorCode <- "REGISTER_CONFLICT_409"
+		return &users, <-errorCode
+	}
+
+	// Need to create a employee profile
+	users.Email = input.Email
+	users.Password = input.Password
+	users.IsActive = true
+	users.UserType = 0
+
+	addNewUser := db.Debug().Create(&users)
+	db.Commit()
+
+	if addNewUser.Error != nil {
+		errorCode <- "REGISTER_FAILED_403"
+		return &users, <-errorCode
+	} else {
+		errorCode <- "nil"
+	}
 
 	return &users, <-errorCode
 }
 
 /* Adding Seeker Profile Repository */
-func (r *repository) AddNewSeekerProfile(userId uint, input *InputUserSeekerRegister) (*model.SeekerProfiles, string) {
+func (r *repository) AddNewSeekerProfile(userId uint, input *dto.InputUserSeekerRegister) (*model.SeekerProfiles, string) {
 
 	var seekerProfile model.SeekerProfiles
 	db := r.db.Model(&seekerProfile)
