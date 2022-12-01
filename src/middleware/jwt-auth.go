@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 )
 

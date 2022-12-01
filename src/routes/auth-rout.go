@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/services/auth"
-	"github.com/KadirbekSharau/apprentice-backend/handlers"
+	"github.com/KadirbekSharau/apprentice-backend/src/services/auth"
+	"github.com/KadirbekSharau/apprentice-backend/src/handlers"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/handlers"
-	"github.com/KadirbekSharau/apprentice-backend/middleware"
-	skillSetService "github.com/KadirbekSharau/apprentice-backend/services/skill-set"
+	"github.com/KadirbekSharau/apprentice-backend/src/handlers"
+	"github.com/KadirbekSharau/apprentice-backend/src/middleware"
+	skillSetService "github.com/KadirbekSharau/apprentice-backend/src/services/skill-set"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

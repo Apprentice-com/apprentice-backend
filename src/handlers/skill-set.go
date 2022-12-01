@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/KadirbekSharau/apprentice-backend/dto"
-	skillSetService "github.com/KadirbekSharau/apprentice-backend/services/skill-set"
-	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
+	skillSetService "github.com/KadirbekSharau/apprentice-backend/src/services/skill-set"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 )
 

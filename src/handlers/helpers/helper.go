@@ -3,14 +3,14 @@ package helpers
 import (
 	"net/http"
 
-	"github.com/KadirbekSharau/apprentice-backend/models"
-	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/models"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 var roles = map[string]int{"seeker": 1, "employer": 2, "admin": 0} 
-const secret_key string = "JWT_SECRET"
+//const secret_key string = "JWT_SECRET"
 const expTime = 24*60*1
 
 var AuthConfig = util.ErrorConfig{
@@ -51,7 +51,7 @@ func UserLoginTokenHandler(ctx *gin.Context, errLogin string, resultLogin *model
 
 	default:
 		accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email, "role": roles["user"]}
-		accessToken, errToken := util.Sign(accessTokenData, secret_key, expTime)
+		accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", expTime)
 
 		if errToken != nil {
 			defer logrus.Error(errToken.Error())
@@ -77,7 +77,7 @@ func ErrUserRegisterHandler(resultRegister *models.Users, ctx *gin.Context, errR
 
 	default:
 		accessTokenData := map[string]interface{}{"id": resultRegister.ID, "email": resultRegister.Email}
-		accessToken, errToken := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
+		accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 60)
 
 		if errToken != nil {
 			defer logrus.Error(errToken.Error())

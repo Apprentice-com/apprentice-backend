@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/KadirbekSharau/apprentice-backend/dto"
-	profileService "github.com/KadirbekSharau/apprentice-backend/services/profile"
-	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
+	profileService "github.com/KadirbekSharau/apprentice-backend/src/services/profile"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 )
 

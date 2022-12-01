@@ -1,8 +1,8 @@
 package skillSetService
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/dto"
-	"github.com/KadirbekSharau/apprentice-backend/models"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
+	"github.com/KadirbekSharau/apprentice-backend/src/models"
 	"gorm.io/gorm"
 )
 

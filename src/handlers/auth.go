@@ -3,10 +3,10 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/KadirbekSharau/apprentice-backend/handlers/helpers"
-	"github.com/KadirbekSharau/apprentice-backend/services/auth"
-	"github.com/KadirbekSharau/apprentice-backend/util"
-	"github.com/KadirbekSharau/apprentice-backend/dto"
+	"github.com/KadirbekSharau/apprentice-backend/src/handlers/helpers"
+	"github.com/KadirbekSharau/apprentice-backend/src/services/auth"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
 	"github.com/gin-gonic/gin"
 )
 

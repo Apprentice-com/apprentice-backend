@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"gorm.io/gorm"
 )
 

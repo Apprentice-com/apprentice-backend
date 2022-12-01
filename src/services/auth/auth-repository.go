@@ -1,9 +1,9 @@
 package authService
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/dto"
-	model "github.com/KadirbekSharau/apprentice-backend/models"
-	util "github.com/KadirbekSharau/apprentice-backend/util"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
+	model "github.com/KadirbekSharau/apprentice-backend/src/models"
+	util "github.com/KadirbekSharau/apprentice-backend/src/util"
 	"gorm.io/gorm"
 )
 
