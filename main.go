@@ -39,7 +39,7 @@ func main() {
 	routes.InitAuthRoutes(db, server)
 	routes.InitProfileRoutes(db, server)
 	routes.InitSkillSetRoutes(db, server)
-	// routes.InitCategoryRoutes(db, server)
+	routes.InitJobPostRoutes(db, server)
 
 	server.Run(":" + util.GodotEnv("GO_PORT"))
 }

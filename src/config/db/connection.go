@@ -41,6 +41,7 @@ func NewDatabaseConnection() *gorm.DB {
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
+	AccountsDataMigrator(db)
 
 	return db
 }

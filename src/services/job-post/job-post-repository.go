@@ -1,8 +1,8 @@
 package jobPostService
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/dto"
-	"github.com/KadirbekSharau/apprentice-backend/models"
+	"github.com/KadirbekSharau/apprentice-backend/src/dto"
+	"github.com/KadirbekSharau/apprentice-backend/src/models"
 	"gorm.io/gorm"
 )
 
@@ -15,26 +15,20 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateJobPost(input *dto.CreateEducationDetails) (*models.EducationDetails, string) {
-	var ed models.EducationDetails
-	db := r.db.Model(&ed)
+func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, string) {
+	var post models.JobPosts
+	db := r.db.Model(&post)
 	errorCode := make(chan string, 1)
 
-	checkExist := db.Debug().Select("*").Where("institution_name = ? AND major = ? AND degree = ? AND user_id = ?", input.InstitutionName, input.Major, input.Degree, input.UserID).Find(&ed)
-
-	if checkExist.RowsAffected > 0 {
-		errorCode <- "CREATE_CONFLICT_409"
-		return &ed, <-errorCode
-	}
-
-	ed.InstitutionName = input.InstitutionName
-	ed.Major = input.Major
-	ed.Degree = input.Degree
-	ed.StartDate = input.StartDate
-	ed.EndDate = input.EndDate
-	ed.UserID = input.UserID
+	post.UserID = input.UserID
+	post.CompanyID = input.CompanyID
+	post.LocationID = input.LocationID
+	post.Name = input.Name
+	post.Description = input.Description
+	post.IsActive = true
+	post.JobPostSkillSets = input.JobPostSkillSets
 	
-	addNew := r.db.Debug().Create(&ed)
+	addNew := r.db.Debug().Create(&post)
 
 	db.Commit()
 
@@ -44,5 +38,21 @@ func (r *repository) CreateJobPost(input *dto.CreateEducationDetails) (*models.E
 		errorCode <- "nil"
 	}
 
-	return &ed, <-errorCode
+	return &post, <-errorCode
+}
+
+func (r *repository) GetAllJobPosts() (*[]models.JobPosts, string) {
+	var posts []models.JobPosts
+	errorCode := make(chan string, 1)
+
+	db := r.db.Model(&posts)
+	result := db.Debug().Select("*").Find(&posts)
+
+	if result.Error != nil {
+		errorCode <- "RESULTS_BOOKS_NOT_FOUND_404"
+	} else {
+		errorCode <- "nil"
+	}
+
+	return &posts, <- errorCode
 }

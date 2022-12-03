@@ -8,6 +8,7 @@ import (
 type Service interface {
 	UserLogin(input *dto.InputLogin) (*model.Users, string)
 	ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string)
+	AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, string)
 }
 
 type service struct {
@@ -35,6 +36,14 @@ func (s *service) UserLogin(input *dto.InputLogin) (*model.Users, string) {
 func (s *service) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
 
 	resultRegister, errRegister := s.repo.ActiveUserSeekerRegister(input)
+
+	return resultRegister, errRegister
+}
+
+/* Admin User Registration Service */
+func (s *service) AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
+
+	resultRegister, errRegister := s.repo.AdminRegister(input)
 
 	return resultRegister, errRegister
 }
