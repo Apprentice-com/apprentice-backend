@@ -34,9 +34,7 @@ func (h *skillSetHandler) CreateSkillSet(ctx *gin.Context) {
 			},
 		},
 	}
-
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-	if errCount > 0 {
+	if errResponse, errCount := util.GoValidator(&input, config.Options); errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}

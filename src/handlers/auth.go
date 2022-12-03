@@ -27,13 +27,10 @@ func NewAuthHandler(service authService.Service) AuthHandler {
 func (h *authHandler) UserLogin(ctx *gin.Context) {
 	var input dto.InputLogin
 	ctx.ShouldBindJSON(&input)
-	errResponse, errCount := util.GoValidator(&input, helpers.AuthConfig.Options)
-
-	if errCount > 0 {
+	if errResponse, errCount := util.GoValidator(&input, helpers.AuthConfig.Options); errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
-
 	data, status, err := h.service.UserLogin(&input)
 	helpers.UserLoginTokenHandler(ctx, status, err, data)
 }
@@ -48,12 +45,10 @@ func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 		Field:   "Password",
 		Message: "password minimum must be 8 character",
 	}
-	errResponse, errCount := util.GoValidator(input, conf)
-	if errCount > 0 {
+	if errResponse, errCount := util.GoValidator(&input, conf); errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
-
 	data, status, err := h.service.ActiveUserSeekerRegister(&input)
 	helpers.ErrUserRegisterHandler(ctx, status, err, data)
 }

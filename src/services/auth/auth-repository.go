@@ -33,7 +33,6 @@ func (r *repository) UserLogin(input *dto.InputLogin) (*model.Users, int, string
 	if util.ComparePassword(users.Password, input.Password) != nil {
 		return &users, http.StatusForbidden, "Password is wrong"
 	}
-
 	return &users, http.StatusOK, "Logged in successfully"
 }
 
@@ -41,16 +40,13 @@ func (r *repository) UserLogin(input *dto.InputLogin) (*model.Users, int, string
 func (r *repository) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string) {
 	var users model.Users
 	db := r.db.Model(&users)
-
 	if db.Debug().Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected > 0 {
 		return &users, http.StatusConflict, "Email already exists"
 	}
-
 	users.Email = input.Email
 	users.Password = input.Password
 	users.IsActive = true
 	users.UserType = 1
-
 	if db.Debug().Create(&users).Error != nil {
 		return nil, http.StatusForbidden, "Registering new account failed"
 	}
@@ -78,7 +74,6 @@ func (r *repository) ActiveUserEmployerRegister(input *dto.InputUserSeekerRegist
 		return nil, http.StatusForbidden, "Registering new account failed"
 	}
 	db.Commit()
-	//r.AddNewSeekerProfile(users.ID, input)
 	return &users, http.StatusCreated, "Registered successfully"
 }
 
@@ -101,7 +96,6 @@ func (r *repository) AdminRegister(input *dto.InputUserSeekerRegister) (*model.U
 		return nil, http.StatusForbidden, "Registering new account failed"
 	}
 	db.Commit()
-	//r.AddNewSeekerProfile(users.ID, input)
 	return &users, http.StatusCreated, "Registered successfully"
 }
 

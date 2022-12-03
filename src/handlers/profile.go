@@ -26,7 +26,6 @@ func NewProfileHandler(service profileService.Service) *profileHandler {
 func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 	var input dto.GetSeekerProfile
 	ctx.Params.ByName("user_id")
-
 	config := util.ErrorConfig{
 		Options: map[string]util.ErrorMetaConfig{
 			"ID required": {
@@ -36,9 +35,8 @@ func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 			},
 		},
 	}
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-	if errCount > 0 {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
+	if errResponse, errCount := util.GoValidator(&input, config.Options); errCount > 0 {
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
 	data, status, err := h.service.GetSeekerProfile(&input)
@@ -64,9 +62,7 @@ func (h *profileHandler) CreateEducationDetails(ctx *gin.Context) {
 			},
 		},
 	}
-
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-	if errCount > 0 {
+	if errResponse, errCount := util.GoValidator(&input, config.Options); errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
