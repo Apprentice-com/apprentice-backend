@@ -18,10 +18,10 @@ func AccountsDataMigrator(db *gorm.DB) (*models.Users) {
 		Email: "admin1@gmail.com",
 		Password: "admin532",
 	}
-	newAdmin, errAdmin := registerService.AdminRegister(&admin)
-	if errAdmin == "REGISTER_CONFLICT_409" || errAdmin == "REGISTER_FAILED_403" {
-		log.Println(errAdmin)
+	data, status, err := registerService.AdminRegister(&admin)
+	if status != 201 {
+		log.Println(err)
 	}
 
-	return newAdmin;
+	return data;
 }

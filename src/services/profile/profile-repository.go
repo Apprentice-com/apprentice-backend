@@ -1,6 +1,8 @@
 package profileService
 
 import (
+	"net/http"
+
 	"github.com/KadirbekSharau/apprentice-backend/src/dto"
 	"github.com/KadirbekSharau/apprentice-backend/src/models"
 	"gorm.io/gorm"
@@ -15,35 +17,23 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Get Profile Repository Service */
-func (r *repository) GetSeekerProfile(input *dto.GetSeekerProfile) (*models.SeekerProfiles, string) {
-
+func (r *repository) GetSeekerProfile(input *dto.GetSeekerProfile) (*models.SeekerProfiles, int, string) {
 	var profile models.SeekerProfiles
 	db := r.db.Model(&profile)
-	errorCode := make(chan string, 1)
 
-	result := db.Debug().Select("*").Where("user_id = ?", input.UserID).Find(&profile)
-
-	if result.RowsAffected < 1 {
-		errorCode <- "CITY_NOT_FOUND_404"
-		return &profile, <-errorCode
-	} else {
-		errorCode <- "nil"
+	if db.Debug().Select("*").Where("user_id = ?", input.UserID).Find(&profile).RowsAffected < 1 {
+		return nil, http.StatusNotFound, "Data not found"
 	}
-
-	return &profile, <-errorCode
+	return &profile, http.StatusOK, "nil"
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateEducationDetails(input *dto.CreateEducationDetails) (*models.EducationDetails, string) {
+func (r *repository) CreateEducationDetails(input *dto.CreateEducationDetails) (*models.EducationDetails, int, string) {
 	var ed models.EducationDetails
 	db := r.db.Model(&ed)
-	errorCode := make(chan string, 1)
 
-	checkExist := db.Debug().Select("*").Where("institution_name = ? AND major = ? AND degree = ? AND user_id = ?", input.InstitutionName, input.Major, input.Degree, input.UserID).Find(&ed)
-
-	if checkExist.RowsAffected > 0 {
-		errorCode <- "CREATE_CONFLICT_409"
-		return &ed, <-errorCode
+	if db.Debug().Select("*").Where("institution_name = ? AND major = ? AND degree = ? AND user_id = ?", input.InstitutionName, input.Major, input.Degree, input.UserID).Find(&ed).RowsAffected > 0 {
+		return nil, http.StatusConflict, "Already exists"
 	}
 
 	ed.InstitutionName = input.InstitutionName
@@ -53,15 +43,9 @@ func (r *repository) CreateEducationDetails(input *dto.CreateEducationDetails) (
 	ed.EndDate = input.EndDate
 	ed.UserID = input.UserID
 	
-	addNew := r.db.Debug().Create(&ed)
-
-	db.Commit()
-
-	if addNew.Error != nil {
-		errorCode <- "CREATE_FAILED_403"
-	} else {
-		errorCode <- "nil"
+	if r.db.Debug().Create(&ed).Error != nil {
+		return nil, http.StatusForbidden, "Create failed"
 	}
-
-	return &ed, <-errorCode
+	db.Commit()
+	return &ed, http.StatusCreated, "nil"
 }

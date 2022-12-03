@@ -1,6 +1,8 @@
 package skillSetService
 
 import (
+	"net/http"
+
 	"github.com/KadirbekSharau/apprentice-backend/src/dto"
 	"github.com/KadirbekSharau/apprentice-backend/src/models"
 	"gorm.io/gorm"
@@ -15,30 +17,17 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSets, string) {
+func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSets, int, string) {
 	var entity models.SkillSets
 	db := r.db.Model(&entity)
-	errorCode := make(chan string, 1)
-
-	checkExist := db.Debug().Select("*").Where("name = ?", input.Name).Find(&entity)
-
-	if checkExist.RowsAffected > 0 {
-		errorCode <- "CREATE_CONFLICT_409"
-		return &entity, <-errorCode
+	if db.Debug().Select("*").Where("name = ?", input.Name).Find(&entity).RowsAffected > 0 {
+		return nil, http.StatusConflict, "Already exists"
 	}
 
 	entity.Name = input.Name
-
-	
-	addNew := r.db.Debug().Create(&entity)
-
+	if r.db.Debug().Create(&entity).Error != nil {
+		return nil, http.StatusForbidden, "Create Failed"
+	}	
 	db.Commit()
-
-	if addNew.Error != nil {
-		errorCode <- "CREATE_FAILED_403"
-	} else {
-		errorCode <- "nil"
-	}
-
-	return &entity, <-errorCode
+	return &entity, http.StatusCreated, "nil"
 }

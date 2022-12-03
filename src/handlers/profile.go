@@ -24,7 +24,6 @@ func NewProfileHandler(service profileService.Service) *profileHandler {
 
 /* Get Seeker Profile Handler */
 func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
-
 	var input dto.GetSeekerProfile
 	ctx.Params.ByName("user_id")
 
@@ -37,25 +36,13 @@ func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 			},
 		},
 	}
-
 	errResponse, errCount := util.GoValidator(&input, config.Options)
-
 	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
 		return
 	}
-
-	result, err := h.service.GetSeekerProfile(&input)
-
-	switch err {
-
-	case "RESULT_STUDENT_NOT_FOUND_404":
-		util.APIResponse(ctx, "data is not exist or deleted", http.StatusNotFound, http.MethodGet, nil)
-		return
-
-	default:
-		util.APIResponse(ctx, "Result data successfully", http.StatusOK, http.MethodGet, result)
-	}
+	data, status, err := h.service.GetSeekerProfile(&input)
+	util.APIResponse(ctx, err, status, http.MethodGet, data)
 }
 
 /* Create Education Details Handler */
@@ -79,24 +66,10 @@ func (h *profileHandler) CreateEducationDetails(ctx *gin.Context) {
 	}
 
 	errResponse, errCount := util.GoValidator(&input, config.Options)
-
 	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
-
-	_, errAccount := h.service.CreateEducationDetails(&input)
-
-	switch errAccount {
-	case "CREATE_CONFLICT_409":
-		util.APIResponse(ctx, "Already exist", http.StatusConflict, http.MethodPost, nil)
-		return
-
-	case "CREATE_FAILED_403":
-		util.APIResponse(ctx, "Create new instance failed", http.StatusForbidden, http.MethodPost, nil)
-		return
-
-	default:
-		util.APIResponse(ctx, "Create new instance successfully", http.StatusCreated, http.MethodPost, nil)
-	}
+	data, status, err := h.service.CreateEducationDetails(&input)
+	util.APIResponse(ctx, err, status, http.MethodGet, data)
 }

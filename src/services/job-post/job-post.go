@@ -6,8 +6,8 @@ import (
 )
 
 type Service interface {
-	GetAllJobPosts() (*[]models.JobPosts, string)
-	CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, string)
+	GetAllJobPosts() (*[]models.JobPosts, int, string)
+	CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string)
 }
 
 type service struct {
@@ -19,16 +19,11 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, string) {
-
-	result, err := s.repo.CreateJobPost(input)
-
-	return result, err
+func (s *service) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string) {
+	return s.repo.CreateJobPost(input)
 }
 
 /* Get All Job Posts */
-func (s *service) GetAllJobPosts() (*[]models.JobPosts, string) {
-	result, err := s.repo.GetAllJobPosts()
-
-	return result, err
+func (s *service) GetAllJobPosts() (*[]models.JobPosts, int, string) {
+	return s.repo.GetAllJobPosts()
 }

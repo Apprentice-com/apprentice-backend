@@ -6,9 +6,9 @@ import (
 )
 
 type Service interface {
-	UserLogin(input *dto.InputLogin) (*model.Users, string)
-	ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string)
-	AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, string)
+	UserLogin(input *dto.InputLogin) (*model.Users, int, string)
+	ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string)
+	AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string)
 }
 
 type service struct {
@@ -20,30 +20,16 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) UserLogin(input *dto.InputLogin) (*model.Users, string) {
-
-	user := model.Users{
-		Email:    input.Email,
-		Password: input.Password,
-	}
-
-	resultLogin, errLogin := s.repo.UserLogin(&user)
-
-	return resultLogin, errLogin
+func (s *service) UserLogin(input *dto.InputLogin) (*model.Users, int, string) {
+	return s.repo.UserLogin(input)
 }
 
 /* Active User Registration Service */
-func (s *service) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
-
-	resultRegister, errRegister := s.repo.ActiveUserSeekerRegister(input)
-
-	return resultRegister, errRegister
+func (s *service) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string) {
+	return s.repo.ActiveUserSeekerRegister(input)
 }
 
 /* Admin User Registration Service */
-func (s *service) AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, string) {
-
-	resultRegister, errRegister := s.repo.AdminRegister(input)
-
-	return resultRegister, errRegister
+func (s *service) AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string) {
+	return s.repo.AdminRegister(input)
 }

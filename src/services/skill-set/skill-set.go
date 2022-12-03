@@ -6,7 +6,7 @@ import (
 )
 
 type Service interface {
-	CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, string)
+	CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, int, string)
 }
 
 type service struct {
@@ -18,9 +18,6 @@ func NewService(repo *repository) *service {
 }
 
 /* Create Skill Set Service */
-func (s *service) CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, string) {
-
-	result, err := s.repo.CreateSkillSet(input)
-
-	return result, err
+func (s *service) CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, int, string) {
+	return s.repo.CreateSkillSet(input)
 }

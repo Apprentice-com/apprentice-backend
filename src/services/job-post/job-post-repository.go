@@ -1,6 +1,8 @@
 package jobPostService
 
 import (
+	"net/http"
+
 	"github.com/KadirbekSharau/apprentice-backend/src/dto"
 	"github.com/KadirbekSharau/apprentice-backend/src/models"
 	"gorm.io/gorm"
@@ -15,10 +17,9 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, string) {
+func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string) {
 	var post models.JobPosts
 	db := r.db.Model(&post)
-	errorCode := make(chan string, 1)
 
 	post.UserID = input.UserID
 	post.CompanyID = input.CompanyID
@@ -28,31 +29,19 @@ func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, 
 	post.IsActive = true
 	post.JobPostSkillSets = input.JobPostSkillSets
 	
-	addNew := r.db.Debug().Create(&post)
-
-	db.Commit()
-
-	if addNew.Error != nil {
-		errorCode <- "CREATE_FAILED_403"
-	} else {
-		errorCode <- "nil"
+	if r.db.Debug().Create(&post).Error != nil {
+		return nil, http.StatusForbidden, "Create new instance failed" 
 	}
-
-	return &post, <-errorCode
+	db.Commit()
+	return &post, http.StatusCreated, "nil"
 }
 
-func (r *repository) GetAllJobPosts() (*[]models.JobPosts, string) {
+func (r *repository) GetAllJobPosts() (*[]models.JobPosts, int, string) {
 	var posts []models.JobPosts
-	errorCode := make(chan string, 1)
-
 	db := r.db.Model(&posts)
-	result := db.Debug().Select("*").Find(&posts)
 
-	if result.Error != nil {
-		errorCode <- "RESULTS_BOOKS_NOT_FOUND_404"
-	} else {
-		errorCode <- "nil"
+	if db.Debug().Select("*").Find(&posts).Error != nil {
+		return &[]models.JobPosts{}, http.StatusNotFound, "Data do not exist"
 	}
-
-	return &posts, <- errorCode
+	return &posts, http.StatusOK, "nil"
 }

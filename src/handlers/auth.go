@@ -25,10 +25,8 @@ func NewAuthHandler(service authService.Service) AuthHandler {
 
 /* User Login Handler */
 func (h *authHandler) UserLogin(ctx *gin.Context) {
-
 	var input dto.InputLogin
 	ctx.ShouldBindJSON(&input)
-
 	errResponse, errCount := util.GoValidator(&input, helpers.AuthConfig.Options)
 
 	if errCount > 0 {
@@ -36,14 +34,12 @@ func (h *authHandler) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	resultLogin, errLogin := h.service.UserLogin(&input)
-
-	helpers.UserLoginTokenHandler(ctx, errLogin, resultLogin)
+	data, status, err := h.service.UserLogin(&input)
+	helpers.UserLoginTokenHandler(ctx, status, err, data)
 }
 
 /* Active User Register Handler */
 func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
-
 	var input dto.InputUserSeekerRegister
 	ctx.ShouldBindJSON(&input)
 	conf := helpers.AuthConfig.Options
@@ -53,12 +49,11 @@ func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 		Message: "password minimum must be 8 character",
 	}
 	errResponse, errCount := util.GoValidator(input, conf)
-
 	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
 		return
 	}
 
-	resultRegister, errRegister := h.service.ActiveUserSeekerRegister(&input)
-	helpers.ErrUserRegisterHandler(resultRegister, ctx, errRegister)
+	data, status, err := h.service.ActiveUserSeekerRegister(&input)
+	helpers.ErrUserRegisterHandler(ctx, status, err, data)
 }
