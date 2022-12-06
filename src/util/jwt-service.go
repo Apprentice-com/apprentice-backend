@@ -26,9 +26,7 @@ type AccessToken struct {
 }
 
 func Sign(Data map[string]interface{}, SecretPublicKeyEnvName string, ExpiredAt time.Duration) (string, error) {
-
 	expiredAt := time.Now().Add(time.Duration(time.Minute) * ExpiredAt).Unix()
-
 	jwtSecretKey := GodotEnv(SecretPublicKeyEnvName)
 
 	claims := jwt.MapClaims{}
@@ -39,20 +37,16 @@ func Sign(Data map[string]interface{}, SecretPublicKeyEnvName string, ExpiredAt 
 		claims[i] = v
 	}
 
-	to := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err := to.SignedString([]byte(jwtSecretKey))
-
+	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(jwtSecretKey))
 	if err != nil {
 		logrus.Error(err.Error())
 		return accessToken, err
 	}
-
 	return accessToken, nil
 }
 
 func VerifyTokenHeader(ctx *gin.Context, SecrePublicKeyEnvName string) (*jwt.Token, error) {
-	tokenHeader := ctx.GetHeader("Authorization")
-	splitToken := strings.SplitAfter(tokenHeader, "Bearer")
+	splitToken := strings.SplitAfter(ctx.GetHeader("Authorization"), "Bearer")
 	if len(splitToken) < 2 {
 		err := errors.New("error: Authorization not found")
 		logrus.Error(err.Error())
@@ -74,10 +68,8 @@ func VerifyTokenHeader(ctx *gin.Context, SecrePublicKeyEnvName string) (*jwt.Tok
 }
 
 func VerifyToken(accessToken, SecrePublicKeyEnvName string) (*jwt.Token, error) {
-	jwtSecretKey := GodotEnv(SecrePublicKeyEnvName)
-
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(jwtSecretKey), nil
+		return []byte(GodotEnv(SecrePublicKeyEnvName)), nil
 	})
 
 	if err != nil {
@@ -97,8 +89,7 @@ func DecodeToken(accessToken *jwt.Token) AccessToken {
 }
 
 func HashPassword(password string) string {
-	pw := []byte(password)
-	result, err := bcrypt.GenerateFromPassword(pw, bcrypt.DefaultCost)
+	result, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
@@ -106,8 +97,5 @@ func HashPassword(password string) string {
 }
 
 func ComparePassword(hashPassword string, password string) error {
-	pw := []byte(password)
-	hw := []byte(hashPassword)
-	err := bcrypt.CompareHashAndPassword(hw, pw)
-	return err
+	return bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
 }

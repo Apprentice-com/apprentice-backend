@@ -31,3 +31,19 @@ func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSet
 	db.Commit()
 	return &entity, http.StatusCreated, "nil"
 }
+
+func (r *repository) GetAllSkillSets() (*[]models.SkillSets, int, string) {
+	var data []models.SkillSets
+	if r.db.Model(&data).Debug().Select("*").Find(&data).Error != nil {
+		return &[]models.SkillSets{}, http.StatusNotFound, "Data do not exist"
+	}
+	return &data, http.StatusOK, "nil"
+}
+
+func (r *repository) GetSkillSetByID(id string) (*models.SkillSets, int, string) {
+	var data models.SkillSets
+	if r.db.Model(&data).Debug().Select("*").Where("id = ?", id).Find(&data).RowsAffected != 1 {
+		return nil, http.StatusNotFound, "Data not found"
+	}
+	return &data, http.StatusOK, "nil"
+}

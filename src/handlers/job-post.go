@@ -49,3 +49,9 @@ func (h *jobPostHandler) CreateJobPost(ctx *gin.Context) {
 	util.APIResponse(ctx, err, status, http.MethodGet, data)
 
 }
+
+/* Get Job Post By ID Handler */
+func (h *jobPostHandler) GetJobPostByID(ctx *gin.Context) {
+	data, status, err := h.service.GetJobPostByID(ctx.Params.ByName("id"))
+	util.APIResponse(ctx, err, status, http.MethodGet, data)
+}

@@ -25,7 +25,7 @@ func NewProfileHandler(service profileService.Service) *profileHandler {
 /* Get Seeker Profile Handler */
 func (h *profileHandler) GetSeekerProfile(ctx *gin.Context) {
 	var input dto.GetSeekerProfile
-	ctx.Params.ByName("user_id")
+	input.UserID = ctx.Params.ByName("user_id")
 	config := util.ErrorConfig{
 		Options: map[string]util.ErrorMetaConfig{
 			"ID required": {

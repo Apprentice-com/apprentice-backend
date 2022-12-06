@@ -17,6 +17,8 @@ func InitSkillSetRoutes(db *gorm.DB, route *gin.Engine) {
 		handler    = handlers.NewSkillSetHandler(service)
 	)
 
-	groupRoute := route.Group("/api/v1/")
-	groupRoute.POST("/skillset", middleware.Auth([]int{0}), handler.CreateSkillSet)
+	groupRoute := route.Group("/api/v1/skillset")
+	groupRoute.POST("/", middleware.Auth([]int{0}), handler.CreateSkillSet)
+	groupRoute.GET("/", handler.GetAllSkillSets)
+	groupRoute.GET("/:id", handler.GetSkillSetByID)
 }

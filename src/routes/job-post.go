@@ -17,7 +17,8 @@ func InitJobPostRoutes(db *gorm.DB, route *gin.Engine) {
 		handler    = handlers.NewJobPostHandler(service)
 	)
 
-	groupRoute := route.Group("/api/v1/")
-	groupRoute.GET("/jobs", handler.GetAllJobPosts)
-	groupRoute.POST("/job", middleware.Auth([]int{0, 2}), handler.CreateJobPost)
+	groupRoute := route.Group("/api/v1/jobpost")
+	groupRoute.GET("/", handler.GetAllJobPosts)
+	groupRoute.GET("/:id", handler.GetJobPostByID)
+	groupRoute.POST("/", middleware.Auth([]int{0, 2}), handler.CreateJobPost)
 }

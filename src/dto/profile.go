@@ -3,7 +3,7 @@ package dto
 import "time"
 
 type GetSeekerProfile struct {
-	UserID uint `validate:"required"`
+	UserID string `validate:"required"`
 }
 
 type CreateEducationDetails struct {

@@ -21,6 +21,12 @@ func NewSkillSetHandler(service skillSetService.Service) *skillSetHandler {
 	return &skillSetHandler{service: service}
 }
 
+/* Get All Skill Set Handler */
+func (h *skillSetHandler) GetAllSkillSets(ctx *gin.Context) {
+	data, status, err := h.service.GetAllSkillSets()
+	util.APIResponse(ctx, err, status, http.MethodGet, data)
+}
+
 /* Create Education Details Handler */
 func (h *skillSetHandler) CreateSkillSet(ctx *gin.Context) {
 	var input dto.CreateSkillSet
@@ -39,5 +45,11 @@ func (h *skillSetHandler) CreateSkillSet(ctx *gin.Context) {
 		return
 	}
 	data, status, err := h.service.CreateSkillSet(&input)
+	util.APIResponse(ctx, err, status, http.MethodGet, data)
+}
+
+/* Get Skill Set By ID Handler */
+func (h *skillSetHandler) GetSkillSetByID(ctx *gin.Context) {
+	data, status, err := h.service.GetSkillSetByID(ctx.Params.ByName("id"))
 	util.APIResponse(ctx, err, status, http.MethodGet, data)
 }
