@@ -10,5 +10,5 @@ type CreateJobPost struct {
 	LocationID       uint               `json:"location_id"`
 	Name             string             `json:"jobpost_name" validate:"required"`
 	Description      string             `json:"jobpost_description" validate:"required"`
-	JobPostSkillSets []models.SkillSets `json:"skill_sets"`
+	SkillSets []models.SkillSet `json:"skill_sets"`
 }

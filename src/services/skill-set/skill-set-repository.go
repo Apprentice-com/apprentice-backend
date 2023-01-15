@@ -17,8 +17,8 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSets, int, string) {
-	var entity models.SkillSets
+func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSet, int, string) {
+	var entity models.SkillSet
 	db := r.db.Model(&entity)
 	if db.Debug().Select("*").Where("name = ?", input.Name).Find(&entity).RowsAffected > 0 {
 		return nil, http.StatusConflict, "Already exists"
@@ -32,16 +32,16 @@ func (r *repository) CreateSkillSet(input *dto.CreateSkillSet) (*models.SkillSet
 	return &entity, http.StatusCreated, "nil"
 }
 
-func (r *repository) GetAllSkillSets() (*[]models.SkillSets, int, string) {
-	var data []models.SkillSets
+func (r *repository) GetAllSkillSets() (*[]models.SkillSet, int, string) {
+	var data []models.SkillSet
 	if r.db.Model(&data).Debug().Select("*").Find(&data).Error != nil {
-		return &[]models.SkillSets{}, http.StatusNotFound, "Data do not exist"
+		return &[]models.SkillSet{}, http.StatusNotFound, "Data do not exist"
 	}
 	return &data, http.StatusOK, "nil"
 }
 
-func (r *repository) GetSkillSetByID(id string) (*models.SkillSets, int, string) {
-	var data models.SkillSets
+func (r *repository) GetSkillSetByID(id string) (*models.SkillSet, int, string) {
+	var data models.SkillSet
 	if r.db.Model(&data).Debug().Select("*").Where("id = ?", id).Find(&data).RowsAffected != 1 {
 		return nil, http.StatusNotFound, "Data not found"
 	}

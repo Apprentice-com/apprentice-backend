@@ -9,15 +9,15 @@ import (
 )
 
 // CompanyProfiles is database entity for each transaction
-type EmployerProfiles struct {
+type EmployerProfile struct {
 	UserID      uint
 	FirstName   string `gorm:"type:varchar(30)"`
 	SecondName  string `gorm:"type:varchar(30)"`
 	Description string `gorm:"type:varchar(1000)"`
 }
 
-// Companies is database entity for categories
-type Companies struct {
+// Company is database entity for categories
+type Company struct {
 	gorm.Model
 	UserID             uint
 	BusinessStreamID   uint
@@ -25,20 +25,20 @@ type Companies struct {
 	CompanyDescription string          `gorm:"type:varchar(1000)"`
 	EstablishmentDate  time.Time       `gorm:"type:date"`
 	CompanyWebsiteUrl  string          `gorm:"type:varchar(500)"`
-	CompanyJobs        []JobPosts      `gorm:"foreignKey:CompanyID"`
-	Images             []CompanyImages `gorm:"foreignKey:CompanyID"`
+	CompanyJobs        []JobPost     `gorm:"foreignKey:CompanyID"`
+	Images             []CompanyImage `gorm:"foreignKey:CompanyID"`
 }
 
-// CompanyImages is database entity for categories
-type CompanyImages struct {
+// CompanyImage is database entity for categories
+type CompanyImage struct {
 	gorm.Model
 	CompanyID    uint   `gorm:"not null"`
 	CompanyImage string `gorm:"type:varchar(500)"`
 }
 
 // Business Stream is a type of company
-type BusinessStreams struct {
+type BusinessStream struct {
 	gorm.Model
 	BusinessStreamName      string      `gorm:"not null"`
-	BusinessStreamCompanies []Companies `gorm:"foreignKey:BusinessStreamID"`
+	BusinessStreamCompanies []Company `gorm:"foreignKey:BusinessStreamID"`
 }

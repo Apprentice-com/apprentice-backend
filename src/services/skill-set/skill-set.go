@@ -7,9 +7,9 @@ import (
 )
 
 type Service interface {
-	CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, int, string)
-	GetAllSkillSets() (*[]models.SkillSets, int, string)
-	GetSkillSetByID(id string) (*models.SkillSets, int, string)
+	CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSet, int, string)
+	GetAllSkillSets() (*[]models.SkillSet, int, string)
+	GetSkillSetByID(id string) (*models.SkillSet, int, string)
 }
 
 type service struct {
@@ -21,16 +21,16 @@ func NewService(repo *repository) *service {
 }
 
 /* Create Skill Set */
-func (s *service) CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSets, int, string) {
+func (s *service) CreateSkillSet(input *dto.CreateSkillSet) (*model.SkillSet, int, string) {
 	return s.repo.CreateSkillSet(input)
 }
 
 /* Get All Skill Sets */
-func (s *service) GetAllSkillSets() (*[]models.SkillSets, int, string) {
+func (s *service) GetAllSkillSets() (*[]models.SkillSet, int, string) {
 	return s.repo.GetAllSkillSets()
 }
 
 /* Get Skill Set By ID */
-func (s *service) GetSkillSetByID(id string) (*models.SkillSets, int, string) {
+func (s *service) GetSkillSetByID(id string) (*models.SkillSet, int, string) {
 	return s.repo.GetSkillSetByID(id)
 }

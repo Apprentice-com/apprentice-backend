@@ -19,5 +19,5 @@ func InitProfileRoutes(db *gorm.DB, route *gin.Engine) {
 
 	groupRoute := route.Group("/api/v1/")
 	groupRoute.GET("/profile", middleware.Auth([]int{1}), handler.GetSeekerProfile)
-	groupRoute.POST("/educationdetails", middleware.Auth([]int{1}), handler.CreateEducationDetails)
+	//groupRoute.POST("/educationdetails", middleware.Auth([]int{1}), handler.CreateEducationDetails)
 }

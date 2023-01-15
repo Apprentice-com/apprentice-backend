@@ -17,15 +17,15 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 /* Create Education Details Repository Service */
-func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string) {
-	var post models.JobPosts
+func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPost, int, string) {
+	var post models.JobPost
 	post.UserID = input.UserID
 	post.CompanyID = input.CompanyID
 	post.LocationID = input.LocationID
 	post.Name = input.Name
 	post.Description = input.Description
 	post.IsActive = true
-	post.JobPostSkillSets = input.JobPostSkillSets
+	post.JobPostSkillSets = input.SkillSets
 	
 	if r.db.Debug().Create(&post).Error != nil {
 		return nil, http.StatusForbidden, "Create new instance failed" 
@@ -34,16 +34,16 @@ func (r *repository) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, 
 	return &post, http.StatusCreated, "nil"
 }
 
-func (r *repository) GetAllJobPosts() (*[]models.JobPosts, int, string) {
-	var posts []models.JobPosts
+func (r *repository) GetAllJobPosts() (*[]models.JobPost, int, string) {
+	var posts []models.JobPost
 	if r.db.Model(&posts).Debug().Select("*").Find(&posts).Error != nil {
-		return &[]models.JobPosts{}, http.StatusNotFound, "Data do not exist"
+		return &[]models.JobPost{}, http.StatusNotFound, "Data do not exist"
 	}
 	return &posts, http.StatusOK, "nil"
 }
 
-func (r *repository) GetJobPostByID(id string) (*models.JobPosts, int, string) {
-	var jobpost models.JobPosts
+func (r *repository) GetJobPostByID(id string) (*models.JobPost, int, string) {
+	var jobpost models.JobPost
 	if r.db.Model(&jobpost).Debug().Select("*").Where("id = ?", id).Find(&jobpost).RowsAffected != 1 {
 		return nil, http.StatusNotFound, "Data not found"
 	}

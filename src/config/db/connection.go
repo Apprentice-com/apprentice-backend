@@ -10,8 +10,8 @@ import (
 )
 
 func NewDatabaseConnection() *gorm.DB {
-	dbURL := "postgres://sharauq:sharauq@database:5432/apprentice"
-	//dbURL := "host=localhost user=kadirbeksharau password=kadr2001 dbname=kadirbeksharau port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	//dbURL := "postgres://sharauq:sharauq@database:5432/apprentice"
+	dbURL := "host=localhost user=kadirbeksharau password=kadr2001 dbname=kadirbeksharau port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect database")
@@ -19,21 +19,29 @@ func NewDatabaseConnection() *gorm.DB {
 
 	err = db.AutoMigrate(
 		&models.Users{},
-		&models.Companies{},
-		&models.Locations{},
-		&models.CompanyImages{},
-		&models.EducationDetails{},
-		&models.EmployerProfiles{},
-		&models.JobPosts{},
-		&models.SeekerProfiles{},
-		&models.SkillSets{},
-		&models.UserLogs{},
+		&models.BusinessStream{},
+		&models.Company{},
+		&models.Location{},
+		&models.CompanyImage{},
+		&models.EducationDetail{},
+		&models.EmployerProfile{},
+		&models.JobPostType{},
+		&models.JobPost{},
+		&models.SeekerProfile{},
+		&models.SkillSet{},
+		&models.UserLog{},
 	)
 
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
-	AccountsDataMigrator(db)
+	accountsDataMigrator(db)
+	jobPostTypeMigrator(db)
+	businessMigrator(db)
+	locationMigrator(db)
+	companyMigrator(db)
+	skillSetMigrator(db)
+	jobPostsMigrator(db)
 
 	return db
 }

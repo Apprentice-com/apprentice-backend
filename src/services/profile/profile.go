@@ -6,8 +6,8 @@ import (
 )
 
 type Service interface {
-	GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfiles, int, string)
-	CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetails, int, string)
+	GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfile, int, string)
+	CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetail, int, string)
 }
 
 type service struct {
@@ -19,11 +19,11 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfiles, int, string) {
+func (s *service) GetSeekerProfile(input *dto.GetSeekerProfile) (*model.SeekerProfile, int, string) {
 	return s.repo.GetSeekerProfile(input)
 }
 
 /* Create EducationDetails Service */
-func (s *service) CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetails, int, string) {
+func (s *service) CreateEducationDetails(input *dto.CreateEducationDetails) (*model.EducationDetail, int, string) {
 	return s.repo.CreateEducationDetails(input)
 }

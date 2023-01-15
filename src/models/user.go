@@ -11,21 +11,21 @@ import (
 type Users struct {
 	gorm.Model
 	UserType        int
-	Email           string             `gorm:"type:varchar(50);unique;not null"`
-	Password        string             `gorm:"type:varchar(255)"`
-	IsActive        bool               `gorm:"type:bool"`
-	ContactNumber   string             `gorm:"type:varchar(20)"`
-	UserImage       string             `gorm:"type:varchar(255)"`
-	Companies       []Companies        `gorm:"foreignKey:UserID"`
-	Degrees         []EducationDetails `gorm:"foreignKey:UserID"`
-	SeekerSkillSets []SkillSets        `gorm:"many2many:user_skill_sets;"`
-	Logs            []UserLogs         `gorm:"foreignKey:UserID"`
-	Jobposts        []JobPosts         `gorm:"foreignKey:UserID"`
-	SeekerProfile   []SeekerProfiles   `gorm:"foreignKey:UserID"`
-	EmployerProfile []EmployerProfiles `gorm:"foreignKey:UserID"`
+	Email           string            `gorm:"type:varchar(50);unique;not null"`
+	Password        string            `gorm:"type:varchar(255)"`
+	IsActive        bool              `gorm:"type:bool"`
+	ContactNumber   string            `gorm:"type:varchar(20)"`
+	UserImage       string            `gorm:"type:varchar(255)"`
+	Companies       []Company         `gorm:"foreignKey:UserID"`
+	Degrees         []EducationDetail `gorm:"foreignKey:UserID"`
+	SeekerSkillSets []SkillSet        `gorm:"many2many:user_skill_sets;"`
+	Logs            []UserLog         `gorm:"foreignKey:UserID"`
+	Jobposts        []JobPost         `gorm:"foreignKey:UserID"`
+	SeekerProfile   []SeekerProfile   `gorm:"foreignKey:UserID"`
+	EmployerProfile []EmployerProfile `gorm:"foreignKey:UserID"`
 }
 
-type UserLogs struct {
+type UserLog struct {
 	UserID           uint      `gorm:"not null"`
 	LastLoginDate    time.Time `gorm:"type:date; not null"`
 	LastJobApplyDate time.Time `gorm:"type:date; not null"`

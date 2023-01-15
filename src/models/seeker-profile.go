@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-// SeekerProfiles is database entity for each transaction
-type SeekerProfiles struct {
+// SeekerProfile is database entity for each transaction
+type SeekerProfile struct {
 	UserID      uint 
 	FirstName   string `gorm:"type:varchar(30)"`
 	SecondName  string `gorm:"type:varchar(30)"`
@@ -11,8 +11,8 @@ type SeekerProfiles struct {
 	Resume      string `gorm:"type:varchar"`
 }
 
-// EducationDetails is database entity for each transaction
-type EducationDetails struct {
+// EducationDetail is database entity for each transaction
+type EducationDetail struct {
 	UserID          uint
 	Degree          string    `gorm:"primaryKey; type:varchar(50)"`
 	Major           string    `gorm:"primaryKey; type:varchar(100)"`

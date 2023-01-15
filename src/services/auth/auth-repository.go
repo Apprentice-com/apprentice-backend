@@ -100,8 +100,8 @@ func (r *repository) AdminRegister(input *dto.InputUserSeekerRegister) (*model.U
 }
 
 /* Adding Seeker Profile Repository */
-func (r *repository) AddNewSeekerProfile(userId uint, input *dto.InputUserSeekerRegister) (*model.SeekerProfiles, string) {
-	var seekerProfile model.SeekerProfiles
+func (r *repository) AddNewSeekerProfile(userId uint, input *dto.InputUserSeekerRegister) (*model.SeekerProfile, string) {
+	var seekerProfile model.SeekerProfile
 	db := r.db.Model(&seekerProfile)
 
 	if db.Debug().Select("*").Where("user_id = ?", userId).Find(&seekerProfile).RowsAffected > 0 {

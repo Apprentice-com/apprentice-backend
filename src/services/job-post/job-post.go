@@ -6,9 +6,9 @@ import (
 )
 
 type Service interface {
-	GetAllJobPosts() (*[]models.JobPosts, int, string)
-	CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string)
-	GetJobPostByID(id string) (*models.JobPosts, int, string)
+	GetAllJobPosts() (*[]models.JobPost, int, string)
+	CreateJobPost(input *dto.CreateJobPost) (*models.JobPost, int, string)
+	GetJobPostByID(id string) (*models.JobPost, int, string)
 }
 
 type service struct {
@@ -20,16 +20,16 @@ func NewService(repo *repository) *service {
 }
 
 /* User Login Service */
-func (s *service) CreateJobPost(input *dto.CreateJobPost) (*models.JobPosts, int, string) {
+func (s *service) CreateJobPost(input *dto.CreateJobPost) (*models.JobPost, int, string) {
 	return s.repo.CreateJobPost(input)
 }
 
 /* Get All Job Posts */
-func (s *service) GetAllJobPosts() (*[]models.JobPosts, int, string) {
+func (s *service) GetAllJobPosts() (*[]models.JobPost, int, string) {
 	return s.repo.GetAllJobPosts()
 }
 
 /* Get Job Post By ID */
-func (s *service) GetJobPostByID(id string) (*models.JobPosts, int, string) {
+func (s *service) GetJobPostByID(id string) (*models.JobPost, int, string) {
 	return s.repo.GetJobPostByID(id)
 }
