@@ -19,17 +19,12 @@ func NewDatabaseConnection() *gorm.DB {
 
 	err = db.AutoMigrate(
 		&models.Users{},
-		&models.BusinessStream{},
 		&models.Company{},
 		&models.Location{},
-		&models.CompanyImage{},
-		&models.EducationDetail{},
 		&models.EmployerProfile{},
 		&models.JobPostType{},
 		&models.JobPost{},
 		&models.SeekerProfile{},
-		&models.SkillSet{},
-		&models.UserLog{},
 	)
 
 	if err != nil {
@@ -37,10 +32,8 @@ func NewDatabaseConnection() *gorm.DB {
 	}
 	accountsDataMigrator(db)
 	jobPostTypeMigrator(db)
-	businessMigrator(db)
 	locationMigrator(db)
 	companyMigrator(db)
-	skillSetMigrator(db)
 	jobPostsMigrator(db)
 
 	return db

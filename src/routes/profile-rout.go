@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/KadirbekSharau/apprentice-backend/src/handlers"
+	"github.com/KadirbekSharau/apprentice-backend/src/controllers"
 	"github.com/KadirbekSharau/apprentice-backend/src/middleware"
-	profileService "github.com/KadirbekSharau/apprentice-backend/src/services/profile"
+	"github.com/KadirbekSharau/apprentice-backend/src/models"
+	"github.com/KadirbekSharau/apprentice-backend/src/services"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -11,13 +12,9 @@ import (
 
 /* @description All Profile routes */
 func InitProfileRoutes(db *gorm.DB, route *gin.Engine) {
-	var (
-		repository = profileService.NewRepository(db)
-		service    = profileService.NewService(repository)
-		handler    = handlers.NewProfileHandler(service)
-	)
+	controller := controllers.NewProfileController(services.NewProfileService(models.NewProfileRepository(db)))
 
 	groupRoute := route.Group("/api/v1/")
-	groupRoute.GET("/profile", middleware.Auth([]int{1}), handler.GetSeekerProfile)
+	groupRoute.GET("/profile", middleware.Auth([]int{1}), controller.GetSeekerProfile)
 	//groupRoute.POST("/educationdetails", middleware.Auth([]int{1}), handler.CreateEducationDetails)
 }

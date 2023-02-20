@@ -1,10 +1,10 @@
-package handlers
+package controllers
 
 import (
 	"net/http"
 
 	"github.com/KadirbekSharau/apprentice-backend/src/dto"
-	"github.com/KadirbekSharau/apprentice-backend/src/services/auth"
+	"github.com/KadirbekSharau/apprentice-backend/src/services"
 	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -33,21 +33,21 @@ var AuthConfig = util.ErrorConfig{
 	},
 }
 
-type AuthHandler interface {
+type UserController interface {
 	UserLogin(ctx *gin.Context)
 	ActiveUserSeekerRegister(ctx *gin.Context)
 }
 
-type authHandler struct {
-	service authService.Service
+type userController struct {
+	service *services.UserService
 }
 
-func NewAuthHandler(service authService.Service) AuthHandler {
-	return &authHandler{service: service}
+func NewUserController(service *services.UserService) UserController {
+	return &userController{service: service}
 }
 
 /* User Login Handler */
-func (h *authHandler) UserLogin(ctx *gin.Context) {
+func (h *userController) UserLogin(ctx *gin.Context) {
 	var input dto.InputLogin
 	ctx.ShouldBindJSON(&input)
 	if errResponse, errCount := util.GoValidator(&input, AuthConfig.Options); errCount > 0 {
@@ -65,7 +65,7 @@ func (h *authHandler) UserLogin(ctx *gin.Context) {
 }
 
 /* Active User Register Handler */
-func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
+func (h *userController) ActiveUserSeekerRegister(ctx *gin.Context) {
 	var input dto.InputUserSeekerRegister
 	ctx.ShouldBindJSON(&input)
 	if errResponse, errCount := util.GoValidator(&input, AuthConfig.Options); errCount > 0 {
@@ -82,7 +82,7 @@ func (h *authHandler) ActiveUserSeekerRegister(ctx *gin.Context) {
 	h.createToken(accessTokenData, ctx, "Register new user account successfully")
 }
 
-func (h *authHandler) createToken(token map[string]interface{}, ctx *gin.Context, message string) {
+func (h *userController) createToken(token map[string]interface{}, ctx *gin.Context, message string) {
 	accessToken, errToken := util.Sign(token, "JWT_SECRET", expTime)
 	if errToken != nil {
 		defer logrus.Error(errToken.Error())

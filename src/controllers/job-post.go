@@ -1,10 +1,10 @@
-package handlers
+package controllers
 
 import (
 	"net/http"
 
 	"github.com/KadirbekSharau/apprentice-backend/src/dto"
-	"github.com/KadirbekSharau/apprentice-backend/src/services/job-post"
+	"github.com/KadirbekSharau/apprentice-backend/src/services"
 	"github.com/KadirbekSharau/apprentice-backend/src/util"
 	"github.com/gin-gonic/gin"
 )
@@ -19,27 +19,27 @@ var config = util.ErrorConfig{
 	},
 }
 
-type JobPostHandler interface {
+type JobPostController interface {
 	GetAllJobPosts(ctx *gin.Context)
 	CreateJobPost(ctx *gin.Context)
 }
 
-type jobPostHandler struct {
-	service jobPostService.Service
+type jobPostController struct {
+	service *services.JobPostService
 }
 
-func NewJobPostHandler(service jobPostService.Service) *jobPostHandler {
-	return &jobPostHandler{service: service}
+func NewJobPostController(service *services.JobPostService) *jobPostController {
+	return &jobPostController{service: service}
 }
 
 /* Get All Job Posts Handler */
-func (h *jobPostHandler) GetAllJobPosts(ctx *gin.Context) {
+func (h *jobPostController) GetAllJobPosts(ctx *gin.Context) {
 	data, status, err := h.service.GetAllJobPosts()
 	util.APIResponse(ctx, err, status, http.MethodGet, data)
 }
 
 /* Create Education Details Handler */
-func (h *jobPostHandler) CreateJobPost(ctx *gin.Context) {
+func (h *jobPostController) CreateJobPost(ctx *gin.Context) {
 	var input dto.CreateJobPost
 	ctx.ShouldBindJSON(&input)
 	if errResponse, errCount := util.GoValidator(&input, config.Options); errCount > 0 {
@@ -52,7 +52,7 @@ func (h *jobPostHandler) CreateJobPost(ctx *gin.Context) {
 }
 
 /* Get Job Post By ID Handler */
-func (h *jobPostHandler) GetJobPostByID(ctx *gin.Context) {
+func (h *jobPostController) GetJobPostByID(ctx *gin.Context) {
 	data, status, err := h.service.GetJobPostByID(ctx.Params.ByName("id"))
 	util.APIResponse(ctx, err, status, http.MethodGet, data)
 }
