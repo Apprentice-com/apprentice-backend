@@ -5,6 +5,10 @@ on:
     tags:
       - '*'
 
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -43,4 +47,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.DOCKERHUB_USERNAME }}/apprentice-backend:${{ github.sha }}

@@ -1,0 +1,12 @@
+- name: Deploy to Google Cloud VM
+  uses: appleboy/ssh-action@master
+  with:
+    host: ${{ secrets.SSH_HOST }}
+    username: ${{ secrets.SSH_USERNAME }}
+    key: ${{ secrets.SSH_PRIVATE_KEY }}
+    port: ${{ secrets.SSH_PORT }}
+    script: |
+      sudo docker stop myapp
+      sudo docker rm myapp
+      sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apprentice-backend:${{ github.sha }}
+      sudo docker run -d --name apprentice-backend -p 8080:4000 --env-file .env --restart always ${{ secrets.DOCKERHUB_USERNAME }}/apprentice-backend:${{ github.sha }}

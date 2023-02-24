@@ -4,7 +4,7 @@
 
 FROM golang:latest as builder
 USER ${USER}
-WORKDIR /usr/src/app
+WORKDIR /usr/src/apprentice-backend
 COPY go.mod \
   go.sum ./
 RUN go mod download
@@ -21,13 +21,13 @@ RUN apt-get clean \
 # ======================
 
 FROM builder
-WORKDIR /usr/src/app
+WORKDIR /usr/src/apprentice-backend
 RUN apt-get update \
   && apt-get install -y \
   make \
   vim \
   build-essential
-COPY --from=builder . ./usr/src/app
+COPY --from=builder . ./usr/src/apprentice-backend
 RUN make goprod
 EXPOSE 4000
 CMD ["./main"]

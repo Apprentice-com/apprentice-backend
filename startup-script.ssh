@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Install Docker
+apt-get update
+apt-get install -y docker.io
+
+# Pull the latest version of the Docker image from Docker Hub
+docker pull sk1pp4r/apprentice-backend
+
+# Run the Docker container, exposing port 8080
+docker run -p 8080:4000 -d sk1pp4r/apprentice-backend
