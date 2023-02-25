@@ -66,7 +66,6 @@ func (r *JobPostRepository) CreateJobPost(input *dto.CreateJobPost) (*JobPost, i
 
 func (r *JobPostRepository) GetAllJobPosts() (*[]JobPost, int, string) {
 	var posts []JobPost
-	fmt.Println(r.db)
 	if r.db.Model(&posts).Debug().Select("*").Find(&posts).Error != nil {
 		fmt.Println(r.db)
 		return &[]JobPost{}, http.StatusNotFound, "Data do not exist"
