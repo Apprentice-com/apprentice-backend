@@ -10,8 +10,8 @@ import (
 )
 
 func NewDatabaseConnection() *gorm.DB {
-	dbURL := "postgres://sharauq:sharauq@database:5432/apprentice"
-	//dbURL := "host=localhost user=kadirbeksharau password=kadr2001 dbname=kadirbeksharau port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	//dbURL := "postgres://sharauq:sharauq@database:5432/apprentice"
+	dbURL := "host=localhost user=kadirbeksharau password=kadr2001 dbname=kadirbeksharau port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect database")
@@ -24,6 +24,7 @@ func NewDatabaseConnection() *gorm.DB {
 		&models.EmployerProfile{},
 		&models.JobPostType{},
 		&models.JobPost{},
+		&models.Application{},
 		&models.SeekerProfile{},
 	)
 

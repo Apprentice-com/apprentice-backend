@@ -12,7 +12,11 @@ import (
 
 /* @description All Profile routes */
 func InitJobPostRoutes(db *gorm.DB, route *gin.Engine) {
-	controller := controllers.NewJobPostController(services.NewJobPostService(models.NewJobPostRepository(db)))
+	var (
+		repo       = models.NewJobPostRepository(db)
+		service    = services.NewJobPostService(repo)
+		controller = controllers.NewJobPostController(service)
+	)
 
 	groupRoute := route.Group("/api/v1/jobpost")
 	groupRoute.GET("/", controller.GetAllJobPosts)

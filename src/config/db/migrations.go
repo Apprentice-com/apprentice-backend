@@ -65,6 +65,9 @@ func companyMigrator(db *gorm.DB) (*[]models.Company, int, string) {
 }
 
 func jobPostsMigrator(db *gorm.DB) (*[]models.JobPost, int, string) {
+	if db.Model(&models.JobPost{}).Debug().Select("*").Find(&models.JobPost{}).RowsAffected > 0 {
+		return nil, http.StatusConflict, "Already exists"
+	}
 	for _, jobPost := range jobPosts {
 		if db.Debug().Create(&jobPost).Error != nil {
 			return nil, http.StatusForbidden, "Create Failed"

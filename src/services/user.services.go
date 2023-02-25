@@ -20,14 +20,10 @@ func (s *UserService) UserLogin(input *dto.InputLogin) (*model.Users, int, strin
 
 /* Active User Registration Service */
 func (s *UserService) ActiveUserSeekerRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string) {
-	input.IsActive = true
-	input.UserType = 1
-	return s.repo.UserRegister(input)
+	return s.repo.UserRegister(true, 1, input)
 }
 
 /* Admin User Registration Service */
 func (s *UserService) AdminRegister(input *dto.InputUserSeekerRegister) (*model.Users, int, string) {
-	input.IsActive = true
-	input.UserType = 0
-	return s.repo.UserRegister(input)
+	return s.repo.UserRegister(true, 0, input)
 }
