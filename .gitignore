@@ -1,3 +1,6 @@
-bin
+.idea
+.bin
 .env
-main
+.data
+vendor
+.DS_Storegit
