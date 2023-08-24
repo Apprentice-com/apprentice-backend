@@ -8,5 +8,6 @@ import (
 
 type Repository interface {
 	CreateUser(ctx context.Context, user *models.User) error
-	GetUser(ctx context.Context, email, password string) (*models.User, error)
+	UserExistsByEmail(ctx context.Context, email string) (bool, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 }

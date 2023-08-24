@@ -12,7 +12,7 @@ func Init() error {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath("./configs")
 	viper.SetConfigName("config")
 
 	return viper.ReadInConfig()

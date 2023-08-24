@@ -1,16 +1,15 @@
-package http
+package auth
 
-type signUpInput struct {
-	Username string `json:"username"`
+type SignUpInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type signInInput struct {
+type SignInInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type signInResponse struct {
+type SignInResponse struct {
 	Token string `json:"token"`
 }

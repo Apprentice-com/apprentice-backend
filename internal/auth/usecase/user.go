@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"time"
 
@@ -11,67 +12,76 @@ import (
 	"github.com/dgrijalva/jwt-go/v4"
 )
 
+const (
+	RoleAdmin     = "Admin"
+	RoleApplicant = "Applicant"
+	RoleEmployer  = "Employer"
+)
+
 type AuthClaims struct {
 	jwt.StandardClaims
 	User *models.User `json:"user"`
 }
 
 type authUseCase struct {
-	repo auth.Repository
-	hashSalt string
-	signingKey []byte
+	repo           auth.Repository
+	hashSalt       string
+	signingKey     []byte
 	expireDuration time.Duration
 }
 
 func NewAuthUseCase(repo auth.Repository, hashSalt string, signingKey []byte, expireDuration time.Duration) *authUseCase {
 	return &authUseCase{
-		repo: repo,
-		hashSalt: hashSalt,
-		signingKey: signingKey,
+		repo:           repo,
+		hashSalt:       hashSalt,
+		signingKey:     signingKey,
 		expireDuration: expireDuration,
 	}
 }
 
+// Sign Up user
+func (a *authUseCase) SignUp(ctx context.Context, inp *auth.SignUpInput) error {
+	userExists, err := a.repo.UserExistsByEmail(ctx, inp.Email)
+	if err != nil {
+		return auth.ErrInvalidEmailFormat
+	}
 
-func (a *authUseCase) SignUp(ctx context.Context, email, password string) error {
-	pwd := sha256.New()
-	pwd.Write([]byte(password))
-	pwd.Write([]byte(a.hashSalt))
+	if userExists {
+		return auth.ErrEmailAlreadyExists
+	}
+
+	hashedPassword := a.hashPassword(inp.Password)
 
 	user := &models.User{
-		Email: email,
-		Password: fmt.Sprintf("%x", pwd.Sum(nil)),
+		Email:    inp.Email,
+		Password: hashedPassword,
+		Role:     RoleAdmin,
+		IsActive: true,
 	}
 
 	return a.repo.CreateUser(ctx, user)
 }
 
-func (a *authUseCase) SignIn(ctx context.Context, email, password string) (string, error) {
-	pwd := sha256.New()
-	pwd.Write([]byte(password))
-	pwd.Write([]byte(a.hashSalt))
-	password = fmt.Sprintf("%x", pwd.Sum(nil))
-
-	user, err := a.repo.GetUser(ctx, email, password)
+// Sign In user
+func (a *authUseCase) SignIn(ctx context.Context, inp *auth.SignInInput) (string, error) {
+	user, err := a.repo.GetUserByEmail(ctx, inp.Email)
 	if err != nil {
 		return "", auth.ErrUserNotFound
 	}
 
-	claims := AuthClaims{
-		User: user,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: jwt.At(time.Now().Add(a.expireDuration)),
-		},
+	hashedInputPassword := a.hashPassword(inp.Password)
+
+	if hashedInputPassword != user.Password {
+		return "", errors.New("incorrect password")
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString(a.signingKey)
+	return a.signTokenJWT(user)
 }
 
+// Parse auth token
 func (a *authUseCase) ParseToken(ctx context.Context, accessToken string) (*models.User, error) {
 	token, err := jwt.ParseWithClaims(
-		accessToken, 
+		accessToken,
 		&AuthClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -89,4 +99,24 @@ func (a *authUseCase) ParseToken(ctx context.Context, accessToken string) (*mode
 	}
 
 	return nil, auth.ErrInvalidAccessToken
+}
+
+// Hashing password with SHA 256
+func (a *authUseCase) hashPassword(password string) string {
+	pwd := sha256.New()
+	pwd.Write([]byte(password))
+	pwd.Write([]byte(a.hashSalt))
+	return fmt.Sprintf("%x", pwd.Sum(nil))
+}
+
+// Sign Token with JWT
+func (a *authUseCase) signTokenJWT(user *models.User) (string, error) {
+	claims := AuthClaims{
+		User: user,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: jwt.At(time.Now().Add(a.expireDuration)),
+		},
+	}
+
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(a.signingKey)
 }
