@@ -39,8 +39,8 @@ func NewAuthUseCase(repo auth.Repository, hashSalt string, signingKey []byte, ex
 	}
 }
 
-// Sign Up user
-func (a *authUseCase) SignUp(ctx context.Context, inp *auth.SignUpInput) error {
+// Sign Up Applicant User
+func (a *authUseCase) SignUpApplicant(ctx context.Context, inp *auth.SignUpInput) error {
 	userExists, err := a.repo.UserExistsByEmail(ctx, inp.Email)
 	if err != nil {
 		return auth.ErrInvalidEmailFormat
@@ -56,6 +56,29 @@ func (a *authUseCase) SignUp(ctx context.Context, inp *auth.SignUpInput) error {
 		Email:    inp.Email,
 		Password: hashedPassword,
 		Role:     RoleAdmin,
+		IsActive: true,
+	}
+
+	return a.repo.CreateUser(ctx, user)
+}
+
+// Sign Up Employer User
+func (a *authUseCase) SignUpEmployer(ctx context.Context, inp *auth.SignUpInput) error {
+	userExists, err := a.repo.UserExistsByEmail(ctx, inp.Email)
+	if err != nil {
+		return auth.ErrInvalidEmailFormat
+	}
+
+	if userExists {
+		return auth.ErrEmailAlreadyExists
+	}
+
+	hashedPassword := a.hashPassword(inp.Password)
+
+	user := &models.User{
+		Email:    inp.Email,
+		Password: hashedPassword,
+		Role:     RoleEmployer,
 		IsActive: true,
 	}
 
