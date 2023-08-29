@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	employer "github.com/KadirbekSharau/apprentice-backend/internal/Employer"
+	"github.com/KadirbekSharau/apprentice-backend/internal/employer"
 	"github.com/gin-gonic/gin"
 )
 

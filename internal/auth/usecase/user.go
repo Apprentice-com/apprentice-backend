@@ -55,8 +55,10 @@ func (a *authUseCase) SignUpApplicant(ctx context.Context, inp *auth.SignUpInput
 	user := &models.User{
 		Email:    inp.Email,
 		Password: hashedPassword,
-		Role:     RoleAdmin,
+		Role:     RoleApplicant,
 		IsActive: true,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	return a.repo.CreateUser(ctx, user)
@@ -80,6 +82,8 @@ func (a *authUseCase) SignUpEmployer(ctx context.Context, inp *auth.SignUpInput)
 		Password: hashedPassword,
 		Role:     RoleEmployer,
 		IsActive: true,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	return a.repo.CreateUser(ctx, user)

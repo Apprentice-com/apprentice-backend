@@ -20,8 +20,8 @@ func NewUserRepository(db *sqlx.DB) *userRepository {
 }
 
 func (r *userRepository) CreateUser(ctx context.Context, user *models.User) error {
-	query := `INSERT INTO users (email, password, role, is_active) 
-	          VALUES (:email, :password, :role, :is_active)`
+	query := `INSERT INTO users (email, password, role, is_active, created_at, updated_at) 
+	          VALUES (:email, :password, :role, :is_active, :created_at, :updated_at)`
 	_, err := r.db.NamedExecContext(ctx, query, user)
 	if err != nil {
 		fmt.Println("Error creating user:", err)

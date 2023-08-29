@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(a auth.UseCase) gin.HandlerFunc {
+func JWTAuthMiddleware(a auth.UseCase) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// Get the JWT token from the Authorization header
 		authHeader := ctx.GetHeader("Authorization")
