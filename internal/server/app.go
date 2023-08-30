@@ -9,6 +9,9 @@ import (
 	"time"
 
 	"github.com/KadirbekSharau/apprentice-backend/configs"
+	"github.com/KadirbekSharau/apprentice-backend/pkg/hash"
+	token "github.com/KadirbekSharau/apprentice-backend/pkg/auth"
+
 	"github.com/KadirbekSharau/apprentice-backend/internal/auth"
 	authHttp "github.com/KadirbekSharau/apprentice-backend/internal/auth/delivery/http"
 	authRepository "github.com/KadirbekSharau/apprentice-backend/internal/auth/repository"
@@ -45,12 +48,14 @@ func NewApp() *App {
 	employerRepository := employerRepository.NewEmployerRepository(db)
 	jobPostRepository := jobpostRepository.NewJobPostRepository(db)
 
+	hasher := hash.NewHasherSHA256(os.Getenv("HASH_SALT"))
+	tokenManager, err := token.NewTokenManager([]byte(os.Getenv("SIGNING_KEY")), viper.GetDuration("auth.token_ttl"))
+
 	return &App{
 		authUC: authUsecase.NewAuthUseCase(
 			authRepository,
-			os.Getenv("HASH_SALT"),
-			[]byte(os.Getenv("SIGNING_KEY")),
-			viper.GetDuration("auth.token_ttl"),
+			hasher,
+			tokenManager,
 		),
 		employerUC: employerUsecase.NewEmployerUseCase(
 			employerRepository,

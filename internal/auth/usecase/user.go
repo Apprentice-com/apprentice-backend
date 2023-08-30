@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"context"
-	"crypto/sha256"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/KadirbekSharau/apprentice-backend/internal/auth"
 	"github.com/KadirbekSharau/apprentice-backend/internal/models"
+	"github.com/KadirbekSharau/apprentice-backend/pkg/hash"
+	token "github.com/KadirbekSharau/apprentice-backend/pkg/auth"
 	"github.com/dgrijalva/jwt-go/v4"
 )
 
@@ -25,17 +25,15 @@ type AuthClaims struct {
 
 type authUseCase struct {
 	repo           auth.Repository
-	hashSalt       string
-	signingKey     []byte
-	expireDuration time.Duration
+	hasher hash.PasswordHasher
+	tokenManager token.TokenManager
 }
 
-func NewAuthUseCase(repo auth.Repository, hashSalt string, signingKey []byte, expireDuration time.Duration) *authUseCase {
+func NewAuthUseCase(repo auth.Repository, hasher hash.PasswordHasher, tokenManager token.TokenManager) *authUseCase {
 	return &authUseCase{
 		repo:           repo,
-		hashSalt:       hashSalt,
-		signingKey:     signingKey,
-		expireDuration: expireDuration,
+		hasher: hasher,
+		tokenManager: tokenManager,
 	}
 }
 
@@ -50,7 +48,10 @@ func (a *authUseCase) SignUpApplicant(ctx context.Context, inp *auth.SignUpInput
 		return auth.ErrEmailAlreadyExists
 	}
 
-	hashedPassword := a.hashPassword(inp.Password)
+	hashedPassword, err := a.hasher.Hash(inp.Password)
+	if err != nil {
+		return err
+	}
 
 	user := &models.User{
 		Email:    inp.Email,
@@ -75,7 +76,10 @@ func (a *authUseCase) SignUpEmployer(ctx context.Context, inp *auth.SignUpInput)
 		return auth.ErrEmailAlreadyExists
 	}
 
-	hashedPassword := a.hashPassword(inp.Password)
+	hashedPassword, err := a.hasher.Hash(inp.Password)
+	if err != nil {
+		return err
+	}
 
 	user := &models.User{
 		Email:    inp.Email,
@@ -96,54 +100,14 @@ func (a *authUseCase) SignIn(ctx context.Context, inp *auth.SignInInput) (string
 		return "", auth.ErrUserNotFound
 	}
 
-	hashedInputPassword := a.hashPassword(inp.Password)
+	hashedInputPassword, err := a.hasher.Hash(inp.Password)
+	if err != nil {
+		return "", err
+	}
 
 	if hashedInputPassword != user.Password {
 		return "", errors.New("incorrect password")
 	}
 
-	return a.signTokenJWT(user)
-}
-
-// Parse auth token
-func (a *authUseCase) ParseToken(ctx context.Context, accessToken string) (*models.User, error) {
-	token, err := jwt.ParseWithClaims(
-		accessToken,
-		&AuthClaims{},
-		func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-			}
-			return a.signingKey, nil
-		})
-
-	if err != nil {
-		return nil, err
-	}
-
-	if claims, ok := token.Claims.(*AuthClaims); ok && token.Valid {
-		return claims.User, nil
-	}
-
-	return nil, auth.ErrInvalidAccessToken
-}
-
-// Hashing password with SHA 256
-func (a *authUseCase) hashPassword(password string) string {
-	pwd := sha256.New()
-	pwd.Write([]byte(password))
-	pwd.Write([]byte(a.hashSalt))
-	return fmt.Sprintf("%x", pwd.Sum(nil))
-}
-
-// Sign Token with JWT
-func (a *authUseCase) signTokenJWT(user *models.User) (string, error) {
-	claims := AuthClaims{
-		User: user,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: jwt.At(time.Now().Add(a.expireDuration)),
-		},
-	}
-
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(a.signingKey)
+	return a.tokenManager.SignTokenJWT(user)
 }

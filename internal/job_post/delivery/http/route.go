@@ -7,8 +7,10 @@ import (
 
 func RegisterHTTPEndpoints(router *gin.Engine, uc jobpost.UseCase) {
 	h := NewHandler(uc)
-	authEndpoints := router.Group("/job-post")
+	jobPostEndpoints := router.Group("/job-post")
 	{
-		authEndpoints.POST("", h.CreateJobPost)
+		jobPostEndpoints.POST("", h.CreateJobPost)
+		jobPostEndpoints.GET("", h.GetAllJobPosts)
+		jobPostEndpoints.GET("/:id", h.GetAllJobPostsByEmployerID)
 	}
 }

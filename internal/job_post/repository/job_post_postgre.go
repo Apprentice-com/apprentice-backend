@@ -30,3 +30,29 @@ func (r *jobPostRepository) CreateJobPost(ctx context.Context, jobPost *models.J
 	}
 	return nil
 }
+
+func (r *jobPostRepository) GetAllJobPostsByEmployerID(ctx context.Context, employerID int) (*[]models.JobPost, error) {
+	query := `SELECT * FROM job_posts WHERE employer_id = $1`
+	var jobPosts []models.JobPost
+
+	err := r.db.SelectContext(ctx, &jobPosts, query, employerID)
+    if err != nil {
+		fmt.Println("Error getting job posts:", err)
+        return nil, err
+    }
+    
+    return &jobPosts, nil
+}
+
+func (r *jobPostRepository) GetAllJobPosts(ctx context.Context) ([]models.JobPost, error) {
+	query := `SELECT * FROM job_posts`
+	var jobPosts []models.JobPost
+
+	err := r.db.SelectContext(ctx, &jobPosts, query)
+    if err != nil {
+		fmt.Println("Error getting job posts:", err)
+        return nil, err
+    }
+    
+    return jobPosts, nil
+}

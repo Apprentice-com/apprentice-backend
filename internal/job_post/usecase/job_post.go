@@ -18,7 +18,7 @@ func NewJobPostUseCase(repo jobpost.Repository) *jobPostUseCase {
 	}
 }
 
-func (uc *jobPostUseCase) CreateJobPost(ctx context.Context, inp *jobpost.CreateJobPostInput) error {
+func (uc *jobPostUseCase) CreateJobPostByEmployer(ctx context.Context, inp *jobpost.CreateJobPostInput) error {
 	jobPost := &models.JobPost{
 		EmployerID:      inp.EmployerID,
 		LocationID:      inp.LocationID,
@@ -30,4 +30,12 @@ func (uc *jobPostUseCase) CreateJobPost(ctx context.Context, inp *jobpost.Create
 		UpdatedAt:       time.Now(),
 	}
 	return uc.repo.CreateJobPost(ctx, jobPost)
+}
+
+func (uc *jobPostUseCase) GetAllJobPostsByEmployerID(ctx context.Context, employerID int) (*[]models.JobPost, error) {
+	return uc.repo.GetAllJobPostsByEmployerID(ctx, employerID)
+}
+
+func (uc *jobPostUseCase) GetAllJobPosts(ctx context.Context) ([]models.JobPost, error) {
+	return uc.repo.GetAllJobPosts(ctx)
 }
