@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +10,8 @@ import (
 	"time"
 
 	"github.com/KadirbekSharau/apprentice-backend/configs"
-	"github.com/KadirbekSharau/apprentice-backend/pkg/hash"
 	token "github.com/KadirbekSharau/apprentice-backend/pkg/auth"
+	"github.com/KadirbekSharau/apprentice-backend/pkg/hash"
 
 	"github.com/KadirbekSharau/apprentice-backend/internal/auth"
 	authHttp "github.com/KadirbekSharau/apprentice-backend/internal/auth/delivery/http"
@@ -50,6 +51,10 @@ func NewApp() *App {
 
 	hasher := hash.NewHasherSHA256(os.Getenv("HASH_SALT"))
 	tokenManager, err := token.NewTokenManager([]byte(os.Getenv("SIGNING_KEY")), viper.GetDuration("auth.token_ttl"))
+	if err != nil {
+		fmt.Println("error creating token manager")
+		return nil
+	}
 
 	return &App{
 		authUC: authUsecase.NewAuthUseCase(
